@@ -117,8 +117,11 @@ def detect_events(news_list) -> tuple:
 
 def score_pool_v3(pool: pd.DataFrame, mom5_map: dict = None, lim10_map: dict = None,
                   turn_map: dict = None, vol_ratio_map: dict = None,
-                  total_limit_up: int = None, events_map: dict = None) -> pd.DataFrame:
-    """v3 主评分。pool 为东财涨停池 DataFrame（含代码/名称/连板数/换手率/所属行业等）。"""
+                  total_limit_up: int = None, events_map: dict = None,
+                  sort_by: str = "prob") -> pd.DataFrame:
+    """v3 主评分。pool 为东财涨停池 DataFrame（含代码/名称/连板数/换手率/所属行业等）。
+    sort_by="prob"：榜单按「次日连板概率」降序（预测目标，默认）；
+    sort_by="score"：按「综合分」降序（因子强度视角，用于对照）。"""
     df = pool.copy()
     if total_limit_up is None:
         total_limit_up = len(df)
@@ -241,7 +244,11 @@ def score_pool_v3(pool: pd.DataFrame, mom5_map: dict = None, lim10_map: dict = N
                 "综合分", "次日连板概率", "评级", "事件标签", "封单强度", "预测理由",
                 "最新价", "成交额", "首次封板时间", "封板资金", "炸板次数"]
     keep = [c for c in out_cols if c in df.columns]
-    return df[keep].sort_values("综合分", ascending=False).reset_index(drop=True)
+    df = df[keep]
+    if sort_by == "prob":
+        # 主排序=次日连板概率；概率同分时用综合分打破（避免 5 档概率平局随机化）
+        return df.sort_values(["次日连板概率", "综合分"], ascending=False).reset_index(drop=True)
+    return df.sort_values("综合分", ascending=False).reset_index(drop=True)
 
 
 def explain_v3(r) -> str:
