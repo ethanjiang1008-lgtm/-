@@ -1,0 +1,14 @@
+# 缓存与生成物
+__pycache__/
+*.pyc
+.preview/
+
+# 全市场日线缓存（69MB，首次运行自动下载生成，不入库）
+bs_daily_all.csv
+
+# 每日预测网页（本地运行生成，不入库；如需示例可手动提交）
+daily_prediction_*.html
+
+# 本地运行日志
+*_out.txt
+finish_out.txt

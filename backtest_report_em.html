@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>首板连板概率模型 · 回测报告</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+  body { font-family: "Microsoft YaHei", Arial, sans-serif; margin: 24px; background: #f7f8fa; color: #1f2329; }
+  h1 { font-size: 22px; }
+  .sub { color: #646a73; font-size: 13px; margin-bottom: 18px; }
+  .cards { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+  .card { background: #fff; border-radius: 8px; padding: 14px 20px; min-width: 150px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .card .v { font-size: 26px; font-weight: 700; color: #1f6feb; }
+  .card .l { font-size: 12px; color: #646a73; margin-top: 4px; }
+  .chart { background: #fff; border-radius: 8px; padding: 14px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .chart .t { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .note { font-size: 12px; color: #8f959e; margin-top: 20px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<h1>首板连板概率模型 · 历史回测报告</h1>
+<div class="sub">样本区间 2026-08-31 ~ 2026-09-17 ｜ 有效交易 70 笔 ｜ 模型口径：东财全因子 Top5</div>
+<div class="cards"><div class="card"><div class="v">45.7%</div><div class="l">次日连板命中率</div></div><div class="card"><div class="v">+3.86%</div><div class="l">平均次日收益</div></div><div class="card"><div class="v">70.0%</div><div class="l">胜率</div></div><div class="card"><div class="v">3.15</div><div class="l">盈亏比</div></div><div class="card"><div class="v">70</div><div class="l">有效交易数</div></div></div><div class="chart" id="c_monthly"><div class="t">月度表现趋势</div><div style="height:320px;"></div></div><div class="chart" id="c_board"><div class="t">按当日连板身位分档</div><div style="height:320px;"></div></div>
+<div class="note">
+  口径说明：① 尾盘买入 = 以当日涨停收盘价买入；② 次日连板 = 次日收盘价继续涨停（主板≥9.8%，20cm≥19.8%，ST按4.8%）；③ 命中率 = 次日连板笔数 / 总笔数；
+  ④ 基准 = 当日全部涨停股次日平均表现（未筛选）。<br>
+  免责声明：本报告为历史数据统计结果，不构成投资建议。市场有风险，入市需谨慎。
+</div>
+</body>
+</html>
+
+<script>
+(function() {
+  var m = {"tooltip": {"trigger": "axis"}, "legend": {"data": ["连板命中率%", "平均次日收益%"], "top": 0}, "grid": {"left": 40, "right": 20, "top": 40, "bottom": 30}, "xAxis": {"type": "category", "data": ["2026-08", "2026-09"]}, "yAxis": [{"type": "value", "name": "命中率%", "min": 0}, {"type": "value", "name": "收益%", "min": -5}], "series": [{"name": "连板命中率%", "type": "line", "data": [20.0, 47.7], "smooth": true, "lineStyle": {"width": 3}}, {"name": "平均次日收益%", "type": "bar", "yAxisIndex": 1, "data": [2.6, 3.96], "itemStyle": {"color": "#5b8ff9"}}]};
+  var b = {"tooltip": {"trigger": "axis"}, "legend": {"data": ["连板命中率%", "平均次日收益%"], "top": 0}, "grid": {"left": 40, "right": 20, "top": 40, "bottom": 30}, "xAxis": {"type": "category", "data": ["2板", "3板", "4板", "5板"]}, "yAxis": [{"type": "value", "name": "命中率%", "min": 0}, {"type": "value", "name": "收益%", "min": -5}], "series": [{"name": "连板命中率%", "type": "bar", "data": [45.8, 45.2, 42.9, 100.0], "itemStyle": {"color": "#34c724"}}, {"name": "平均次日收益%", "type": "line", "yAxisIndex": 1, "data": [4.72, 3.53, 2.68, 10.03], "smooth": true}]};
+  var c1 = document.getElementById('c_monthly').querySelector('div');
+  var c2 = document.getElementById('c_board').querySelector('div');
+  if (typeof echarts !== 'undefined') {
+    echarts.init(c1).setOption(m);
+    echarts.init(c2).setOption(b);
+  }
+})();
+</script>
