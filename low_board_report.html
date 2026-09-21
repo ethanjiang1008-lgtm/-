@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>低位模式（1-3板）专项回测报告</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+  body { font-family: "Microsoft YaHei", Arial, sans-serif; margin: 0; background: #f0f2f5; color: #1f2329; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px 56px; }
+  h1 { font-size: 23px; margin: 0 0 6px; }
+  .sub { color: #646a73; font-size: 13px; margin-bottom: 20px; }
+  .panel { background: #fff; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .panel h2 { font-size: 15px; margin: 0 0 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid #e5e6eb; padding: 7px 10px; text-align: center; }
+  th { background: #f7f8fa; }
+  .hit { color: #d54941; font-weight: 700; }
+  .chart { height: 330px; }
+  .note { font-size: 12px; color: #8f959e; line-height: 1.9; margin-top: 10px; }
+  .answer { background: #f0f7ff; border: 1px solid #b3d4ff; border-radius: 8px; padding: 12px 16px; font-size: 13px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>低位模式（1-3 板）专项回测报告</h1>
+<div class="sub">回测 2025-06-02 ~ 2026-09-18（319 交易日）｜ 尾盘买入 → 次日连板命中 ｜ 全市场 28042 个 1-3 板涨停样本</div>
+
+<div class="panel"><h2>一、v2 为什么「刚好」50%？</h2>
+<div class="answer">
+<b>不是预设、不是卡线，是 70/140 的真实巧合。</b><br>
+精准模式（只做当日最高分且身位≥6 的龙头）一年共出手 140 天，其中 70 天次日连板 → 70 ÷ 140 = 50.0%。命中率精确等于 50 只是因为分子恰好是分母一半。<br><br>
+更重要的：<b>这 50% 主要来自「身位≥6」这个门槛，而不是评分魔法</b>——6板+ 的自然晋级率本身就是 53.7%（一年 175 个样本）。模型评分在其中的增量贡献其实有限。这也是为什么您要求「不做 4 板以上」后，命中率无法保持 50%：身位因子被拿掉了，剩下因子能提升的空间只有约 6 个百分点。
+</div>
+</div>
+
+<div class="panel"><h2>二、1-3 板池的物理上限（为什么到不了 50%+）</h2>
+<div class="chart" id="c_nat"></div>
+<p class="note">连板高度越高，次日继续连板的自然概率越高（市场规律）。1-3 板池里最高的是 3 板 = 43.1%，这就是低位策略的天花板——在 3 板自然概率上，涨停频率/动量等因子最多再加约 6pp。</p>
+</div>
+
+<div class="panel"><h2>三、低位模式回测结果</h2>
+<table>
+<tr><th>配置</th><th>样本</th><th>命中率</th><th>训练段</th><th>验证段</th><th>基准</th><th>提升</th><th>出手率</th></tr>
+<tr><td>低位 TOP1（1-3板，每日出手）</td><td>319</td><td class="hit">47.65%</td><td>49.4%</td><td>45.3%</td><td>19.7%</td><td>+27.9pp</td><td>100%</td></tr>
+<tr><td>低位精准 TOP1（当日最高分恰好3板）</td><td>302</td><td class="hit">48.68%</td><td>50.0%</td><td>47.0%</td><td>20.9%</td><td>+27.8pp</td><td>95%</td></tr>
+<tr><td>低位 TOP5（1-3板）</td><td>1595</td><td>32.85%</td><td>35.3%</td><td>29.6%</td><td>19.7%</td><td>+13.2pp</td><td>100%</td></tr>
+</table>
+<p class="note">训练段 = 2025-06~2026-02（前 2/3），验证段 = 2026-03~2026-09（后 1/3）。低位精准配置训练/验证两段都在 47-50%，无明显过拟合。</p>
+</div>
+
+<div class="panel"><h2>四、低位池内因子区分度（选股依据）</h2>
+<div class="chart" id="c_f"></div>
+<p class="note">在 1-3 板池内：涨停频率（近10日涨停次数）仍有区分度（lim10≥4 → 31.8% vs 池内基准 19.7%），动量次之；但都弱于「3板身位」本身（43.1%）。因此低位模式的排序策略 = 身位优先（3板 > 2板 > 1板）+ 涨停频率 + 动量微调。</p>
+</div>
+
+<div class="panel"><h2>五、结论与权衡</h2>
+<table>
+<tr><th>用户诉求</th><th>可实现性</th></tr>
+<tr><td>只做 1-3 板（不做 4板+）</td><td>✅ 已落地：<code>--max-boards 3</code> 或 <code>--board-eq 3</code></td></tr>
+<tr><td>命中率越高越好</td><td>⚠️ 1-3 板池上限约 49%（低位精准 48.68%，训练 50.0%/验证 47.0%）；要稳定 50%+ 必须引入 4板+（与「不做高位」互斥）</td></tr>
+<tr><td>想更高又不做高位</td><td>可叠加 <code>--mood-cap 120</code>（过热日空仓），但样本变少、全期约 47-49%；市场回暖期验证段可接近 50%</td></tr>
+</table>
+<div class="note">⚠️ 免责声明：模型基于历史统计，回测不代表未来；验证段市场环境偏弱，所有策略命中率下降。不构成投资建议。</div>
+</div>
+</div>
+
+<script>
+(function() {
+  var charts = {
+    c_nat: {
+      tooltip: { trigger: 'axis' },
+      grid: { left: 60, right: 30, top: 30, bottom: 30 },
+      xAxis: { type: 'category', data: ['1板', '2板', '3板', '4板', '5板', '6板+'] },
+      yAxis: { type: 'value', name: '次日连板自然晋级率 %', max: 60 },
+      series: [{ type: 'bar', data: [16.36, 29.56, 43.11, 40.60, 50.18, 53.71],
+        label: { show: true, position: 'top', formatter: '{c}%' },
+        itemStyle: { color: function(p) { return p.dataIndex < 3 ? '#1f6feb' : '#8f959e'; } } }]
+    },
+    c_f: {
+      tooltip: { trigger: 'axis' },
+      grid: { left: 190, right: 40, top: 20, bottom: 30 },
+      xAxis: { type: 'value', name: '命中率 %', max: 50 },
+      yAxis: { type: 'category', inverse: true, data: ['池内基准(1-3板整体)', 'lim10≥2', 'lim10≥3', 'lim10≥4', 'mom5≥20', 'mom5≥30', 'lim10≥2 且 mom5≥20', '3板整体', '3板 TOP1 视角'] },
+      series: [{ type: 'bar', data: [19.71, 28.21, 29.17, 31.77, 24.34, 26.28, 30.57, 43.11, 41.28],
+        label: { show: true, position: 'right', formatter: '{c}%' } }]
+    }
+  };
+  for (var k in charts) {
+    var el = document.getElementById(k);
+    if (el && typeof echarts !== 'undefined') echarts.init(el).setOption(charts[k]);
+  }
+})();
+</script>
+</body>
+</html>

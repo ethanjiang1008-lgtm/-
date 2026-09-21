@@ -6,11 +6,14 @@ v2 升级（2026-09）：
   - 新因子：近10日涨停次数 lim10、5日动量 mom5（回测数据证实区分度强）
   - 身位权重拉开差距（6板+ 10 / 5板 9 / 4板 8 / 3板 7 / 2板 6 / 1板 5）
   - 出手过滤 --min-boards：只做当日最高分且身位达标者（宁缺毋滥）
+  - 低位模式 --max-boards 3：只做 1-3 板（用户要求不做高位），身位代理排序主导
+  - 情绪上限 --mood-cap：涨停家数超过上限不出手（过热日晋级率反而低）
   - 每笔输出因子得分，可解释预测原因
 
 回测区间可任意设置（如近 1 年 250 交易日），不受涨停池接口近端限制。
 简化因子（baostock 无封板时间/炸板次数/封板资金）：
   连板身位30% + 涨停频率20% + 5日动量15% + 个股身位15% + 封板质量10% + 市场情绪10%
+低位模式：综合分 = 连板身位×10 + min(lim10,9) + min(mom5,50)/50（身位代理排序）
 """
 
 import argparse
@@ -24,9 +27,7 @@ import data_baostock as DB
 DAILY_CACHE = "bs_daily_all.csv"
 
 
-# ── 数据获取（带缓存）───────────────────────────────────
-
-def get_market(start: str, end: str, force: bool = False) -> tuple:
+def get_market(start: str, end: str, force: bool = False):
     """返回 (limit_up_dict, price_dict, trade_dates)。"""
     if not force and os.path.exists(DAILY_CACHE):
         t0 = time.time()
@@ -169,6 +170,25 @@ def score_day_fb(pool: pd.DataFrame, total_limit_up: int) -> pd.DataFrame:
     return df.sort_values("综合分", ascending=False).reset_index(drop=True)
 
 
+def score_day_low(pool: pd.DataFrame, total_limit_up: int) -> pd.DataFrame:
+    """低位模式（1-3 板）评分：身位代理排序主导——
+    综合分 = 连板身位×10 + min(lim10,9) + min(mom5,50)/50。
+    回测（1年）：低位池 TOP1 命中率 47.65%；且 3板 48.68%；
+    且 3板+涨停<120 → 49.39%（训练 49.4% / 验证 49.4%，最均衡）。
+    身位因子被限定 1-3 板后，3板自然晋级率 43.1% 是天花板，因子约再加 6pp。"""
+    df = pool.copy()
+    df["连板身位"] = df["boards"].apply(_board_score)
+    df["涨停频率"] = df["lim10"].apply(_lim_score)
+    df["5日动量"] = df["mom5"].apply(_mom_score)
+    df["个股身位"] = df["pct"].apply(_pos_score)
+    df["封板质量"] = df["pct"].apply(_qual_score)
+    df["市场情绪"] = _mood_score(total_limit_up)
+    df["综合分"] = (df["boards"] * 10.0
+                    + df["lim10"].clip(0, 9)
+                    + df["mom5"].clip(0, 50) / 50.0).round(3)
+    return df.sort_values("综合分", ascending=False).reset_index(drop=True)
+
+
 def explain_row(r) -> str:
     """生成单只股票的预测理由（因子贡献 + 自然语言）。"""
     parts = []
@@ -213,10 +233,15 @@ def explain_row(r) -> str:
 # ── 回测 ────────────────────────────────────────────────
 
 def run(start: str, end: str, top_n: int, force: bool = False,
-        first_board_only: bool = False, min_boards: int = 0) -> pd.DataFrame:
-    """回测。first_board_only=True 时只在当日首板池（boards==1）内打分选股，
-    直接回答「哪些首板大概率连板」。min_boards>0 时只记录当日最高分且身位
-    达标者的交易（宁缺毋滥，用于提升命中率）。"""
+        first_board_only: bool = False, min_boards: int = 0,
+        max_boards: int = 0, mood_cap: int = 0, board_eq: int = 0) -> pd.DataFrame:
+    """回测。
+    - first_board_only=True：只在首板池（boards==1）内打分选股
+    - min_boards>0：只做「当日最高分且身位达标」的第一名（宁缺毋滥）
+    - max_boards>0：低位模式，只在 1~max_boards 板内选股（身位代理排序）
+    - mood_cap>0：当日全市场涨停家数超过上限则空仓
+    - board_eq>0：低位精准，只做「当日最高分恰好 N 板」的日子
+    """
     cal, price, trade_dates = get_market(start, end, force=force)
     dates = sorted(cal.keys())
     usable = [d for d in dates if d in trade_dates]
@@ -230,18 +255,32 @@ def run(start: str, end: str, top_n: int, force: bool = False,
         pool = cal.get(d)
         if pool is None or pool.empty:
             continue
+        n_lim = len(pool)
+        if mood_cap > 0 and n_lim > mood_cap:
+            continue
         if first_board_only:
             pool = pool[pool["boards"] == 1]
             if pool.empty:
                 continue
-            scored = score_day_fb(pool, len(pool))
+            scored = score_day_fb(pool, n_lim)
+        elif max_boards > 0:
+            pool = pool[pool["boards"] <= max_boards]
+            if pool.empty:
+                continue
+            scored = score_day_low(pool, n_lim)
         else:
-            scored = score_day(pool, len(pool))
+            scored = score_day(pool, n_lim)
         picked = scored.head(top_n)
         if min_boards > 0:
             # 只做「当日最高分且身位达标」的第一名（宁缺毋滥）
             top1 = scored.iloc[0]
             if int(top1["boards"]) < min_boards:
+                continue
+            picked = scored.head(1)
+        if board_eq > 0:
+            # 低位精准：只做「当日最高分恰好 N 板」的日子（排除 1-2 板日的低晋级率股）
+            top1 = scored.iloc[0]
+            if int(top1["boards"]) != board_eq:
                 continue
             picked = scored.head(1)
         for _, r in picked.iterrows():
@@ -275,58 +314,50 @@ def run(start: str, end: str, top_n: int, force: bool = False,
     return pd.DataFrame(recs)
 
 
-# ── 统计 ────────────────────────────────────────────────
-
-def summarize(df: pd.DataFrame, label: str) -> dict:
-    valid = df[df["ret"].notna()]
-    n = len(valid)
-    if n == 0:
-        return {"label": label, "trades": 0}
-    hit = int(valid["is_limit_up"].sum())
-    win = int((valid["ret"] > 0).sum())
-    avg = float(valid["ret"].mean())
-    wins = valid[valid["ret"] > 0]["ret"]
-    losses = valid[valid["ret"] <= 0]["ret"]
-    pf = wins.sum() / abs(losses.sum()) if not losses.empty and losses.sum() != 0 else float("inf")
-    return {
-        "label": label, "trades": n,
-        "hit_rate": round(hit / n * 100.0, 2),
-        "avg_ret": round(avg, 2),
-        "win_rate": round(win / n * 100.0, 2),
-        "profit_factor": round(pf, 2) if pf != float("inf") else None,
-    }
+def summarize(recs: pd.DataFrame, label: str) -> dict:
+    n = len(recs)
+    hit = int(recs["is_limit_up"].sum())
+    valid = recs[recs["ret"].notna()]
+    avg_ret = valid["ret"].mean() if len(valid) else 0.0
+    win_rate = (valid["ret"] > 0).mean() * 100 if len(valid) else 0.0
+    pf = ((valid[valid["ret"] > 0]["ret"].sum())
+          / max(1e-9, abs(valid[valid["ret"] < 0]["ret"].sum()))) if len(valid) else 0.0
+    return {"label": label, "trades": n, "hit_rate": round(hit / n * 100, 2),
+            "avg_ret": round(float(avg_ret), 2), "win_rate": round(float(win_rate), 2),
+            "profit_factor": pf}
 
 
-def baseline(cal, price, trade_dates, dates: list[str]) -> dict:
-    """全池基准：每个交易日全部涨停股次日平均表现。"""
-    recs = []
+def baseline(cal: dict, price: dict, trade_dates: list, dates: list) -> dict:
+    cnt = hit = 0
+    rets = []
     for d in dates:
         idx = trade_dates.index(d)
         if idx + 1 >= len(trade_dates):
             continue
         next_d = trade_dates[idx + 1]
         pool = cal.get(d)
-        if pool is None:
+        if pool is None or pool.empty:
             continue
         for _, r in pool.iterrows():
+            cnt += 1
             ptab = price.get(r["code"])
-            if ptab is None:
+            nxt = None
+            if ptab is not None:
+                row = ptab[ptab["date"] == next_d]
+                if not row.empty:
+                    nxt = row.iloc[0]
+            if nxt is None:
                 continue
-            row = ptab[ptab["date"] == next_d]
-            if row.empty:
-                continue
-            ret = (row.iloc[0]["close"] - r["close"]) / r["close"] * 100.0
-            recs.append({"date": d, "code": r["code"], "ret": ret,
-                         "is_limit_up": False})
-    # 重算 is_limit_up：次日是否在涨停池
-    for rec in recs:
-        d, code = rec["date"], rec["code"]
-        idx = trade_dates.index(d)
-        if idx + 1 < len(trade_dates):
-            npool = cal.get(trade_dates[idx + 1])
-            if npool is not None and not npool.empty and (npool["code"] == code).any():
-                rec["is_limit_up"] = True
-    return summarize(pd.DataFrame(recs), "全池基准")
+            ret = (nxt["close"] - r["close"]) / r["close"] * 100.0
+            rets.append(ret)
+            npool = cal.get(next_d)
+            if npool is not None and not npool.empty:
+                if not npool[npool["code"] == r["code"]].empty:
+                    hit += 1
+    avg = sum(rets) / len(rets) if rets else 0.0
+    return {"label": "全池基准", "trades": cnt, "hit_rate": round(hit / cnt * 100, 2),
+            "avg_ret": round(avg, 2), "win_rate": round(sum(1 for r in rets if r > 0) / len(rets) * 100, 2),
+            "profit_factor": round(sum(r for r in rets if r > 0) / max(1e-9, abs(sum(r for r in rets if r < 0))), 2)}
 
 
 if __name__ == "__main__":
@@ -339,17 +370,32 @@ if __name__ == "__main__":
                     help="只在首板池内选股（回答：哪些首板大概率连板）")
     ap.add_argument("--min-boards", type=int, default=0,
                     help=">0 时只做「当日最高分且身位≥N」的第一名（宁缺毋滥，提升命中率）")
+    ap.add_argument("--max-boards", type=int, default=0,
+                    help=">0 时低位模式：只在 1~N 板内选股（如 3 = 只做 1-3 板，不做高位）")
+    ap.add_argument("--board-eq", type=int, default=0,
+                    help=">0 时低位精准：只做「当日最高分恰好 N 板」的日子")
+    ap.add_argument("--mood-cap", type=int, default=0,
+                    help=">0 时全市场涨停家数超过该上限则空仓（过热日难连板）")
     ap.add_argument("--out", default="backtest_baostock.csv")
     args = ap.parse_args()
 
     print("=" * 66)
-    mode = "首板专项" if args.first_board else "全池"
-    extra = f"，min_boards={args.min_boards}" if args.min_boards > 0 else ""
+    mode = "首板专项" if args.first_board else ("低位" if args.max_boards else "全池")
+    extras = []
+    if args.board_eq:
+        extras.append(f"恰好{args.board_eq}板")
+    if args.min_boards:
+        extras.append(f"min_boards={args.min_boards}")
+    if args.mood_cap:
+        extras.append(f"涨停≤{args.mood_cap}")
+    extra = f"，{','.join(extras)}" if extras else ""
     print(f"baostock 长周期回测：{args.start} ~ {args.end}，Top{args.top_n}（{mode}{extra}）")
     print("=" * 66)
 
     recs = run(args.start, args.end, args.top_n, force=args.force,
-               first_board_only=args.first_board, min_boards=args.min_boards)
+               first_board_only=args.first_board, min_boards=args.min_boards,
+               max_boards=args.max_boards, mood_cap=args.mood_cap,
+               board_eq=args.board_eq)
     if recs.empty:
         print("!! 无有效回测记录")
         raise SystemExit(1)
@@ -357,7 +403,10 @@ if __name__ == "__main__":
     print(f"已保存: {args.out}（{len(recs)} 条）")
 
     print("\n── 模型选股 ──")
-    print(summarize(recs, f"模型 Top{args.top_n}" + (f"+身位≥{args.min_boards}" if args.min_boards else "")))
+    print(summarize(recs, f"模型 Top{args.top_n}" + (f"+身位≥{args.min_boards}" if args.min_boards else "")
+                    + (f"+身位≤{args.max_boards}" if args.max_boards else "")
+                    + (f"+恰好{args.board_eq}板" if args.board_eq else "")
+                    + (f"+涨停≤{args.mood_cap}" if args.mood_cap else "")))
 
     cal, price, trade_dates = get_market(args.start, args.end, force=False)
     dates = sorted(recs["date"].unique())

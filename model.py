@@ -119,7 +119,8 @@ def score_fund(seal_amount_wan: float) -> float:
 
 def score_pool(df: pd.DataFrame, total_limit_up: int = None,
                mom5_map: dict = None, lim10_map: dict = None,
-               first_board_mode: bool = False) -> pd.DataFrame:
+               first_board_mode: bool = False,
+               low_board_mode: bool = False) -> pd.DataFrame:
     """对涨停池 DataFrame 逐行评分（v2）。
 
     新增可选参数：
@@ -228,7 +229,12 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None,
     df["涨停次数"] = df["_code6"].map(lim10_map or {})
 
     # 综合分（v2；首板专项用涨停频率绝对主导）
-    if first_board_mode:
+    if low_board_mode:
+        # 低位模式（1-3板）：身位代理排序主导，回测命中率 47.65%（恰好3板 48.68%）
+        df["综合分"] = (df["连板数"] * 10.0
+                        + df["涨停次数"].clip(0, 9)
+                        + df["动量值"].clip(0, 50) / 50.0).round(3)
+    elif first_board_mode:
         # 首板池内连板身位恒为 5 分，不参与区分；
         # lim10 绝对主导（回测：lim10≥3 时首板 TOP1 命中率 26.7% vs 基准 16.4%）
         df["综合分"] = (df["涨停频率"] * 10.0 + df["5日动量"] * 0.5
@@ -240,6 +246,10 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None,
                 total += row[factor] * w
             return round(10.0 * total, 1)
         df["综合分"] = df.apply(_composite, axis=1)
+
+    # 低位模式过滤：只做 1-3 板（用户要求不做高位）
+    if low_board_mode:
+        df = df[df["连板数"] <= 3].copy()
 
     # 概率校准
     def _prob(row):
@@ -274,6 +284,8 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None,
                 "综合分", "次日连板概率", "评级", "预测理由",
                 "最新价", "成交额"]
     keep = [c for c in out_cols if c in df.columns]
+    if low_board_mode:
+        return df[keep].sort_values("综合分", ascending=False).reset_index(drop=True)
     return df[keep].sort_values("次日连板概率", ascending=False).reset_index(drop=True)
 
 

@@ -12,6 +12,7 @@
 - **概率校准**：`基准晋级率 × (0.6 + 综合分/100)`，基准率按身位分档（v2 回测实测：首板16% / 2板29% / 3板42% / 4板40% / 5板48% / 6板53%），上限 85%
 - **每日选股 + 可视化网页**：`python run_daily.py` → 打印全部涨停股评分 + Top 榜单，并**自动生成预测网页** `daily_prediction_YYYYMMDD.html`（统计卡 / Top10 概率榜(含预测理由) / 全部明细表 / ECharts 分布图）
 - **精准模式**：只做「当日最高分且连板身位≥6」的第一名（宁缺毋滥），全期命中率 50.0%
+- **低位模式**：`--max-boards 3` 只做 1-3 板（不做高位，回测命中率 47.65%）；`--board-eq 3` 低位精准（只做当日最高分恰好 3 板的日子，命中率 48.68%，训练 50.0% / 验证 47.0%）。1-3 板池物理上限：3板自然晋级率 43.1% 是天花板，因子提升约 +6pp
 - **双源历史回测**：
   - `python backtest_baostock.py` —— baostock 全市场日线，**可回测任意长区间**（默认近 1 年），连板数/涨停判定本地自算
   - `python backtest.py` —— AKShare 东财涨停池，**10 因子完整口径**（封板时间/炸板次数/封板资金齐全），但涨停池历史仅保留最近约 15 个交易日
@@ -36,6 +37,8 @@ python run_daily.py --date 2026-09-18
 python run_daily.py --top-n 10 --no-html --out daily_result.csv
 # 首板专项（只预测首板晋级二板）
 python run_daily.py --first-board
+# 低位模式（只做 1-3 板，不做高位）
+python run_daily.py --max-boards 3
 
 # 3. 历史回测（baostock 长周期版，推荐用于准确性评估）
 python backtest_baostock.py --start 2025-06-02 --end 2026-09-18 --top-n 5
@@ -43,6 +46,10 @@ python backtest_baostock.py --start 2025-06-02 --end 2026-09-18 --top-n 5
 python backtest_baostock.py --start 2025-06-02 --end 2026-09-18 --top-n 5 --first-board
 # 精准模式：只做当日最高分且身位≥6 的第一名（命中率 50%）
 python backtest_baostock.py --start 2025-06-02 --end 2026-09-18 --top-n 1 --min-boards 6
+# 低位模式：只做 1-3 板（命中率 47.65%，每日出手）
+python backtest_baostock.py --start 2025-06-02 --end 2026-09-18 --top-n 1 --max-boards 3
+# 低位精准：只做当日最高分恰好 3 板的日子（命中率 48.68%）
+python backtest_baostock.py --start 2025-06-02 --end 2026-09-18 --top-n 1 --max-boards 3 --board-eq 3
 # 首次运行会拉取全市场日线（约 20-40 分钟），之后走本地缓存秒级完成
 
 # 4. 历史回测（东财全因子版，受涨停池近端限制）

@@ -98,6 +98,8 @@ def main():
     ap.add_argument("--no-html", action="store_true", help="跳过生成预测网页")
     ap.add_argument("--first-board", action="store_true",
                     help="首板专项模式：只对首板打分排序（预测哪些首板晋级二板）")
+    ap.add_argument("--max-boards", type=int, default=0,
+                    help=">0 时低位模式：只做 1~N 板（如 3 = 只做 1-3 板，不做高位）")
     args = ap.parse_args()
 
     if args.date:
@@ -115,6 +117,10 @@ def main():
         if "连板数" in pool.columns:
             pool = pool[pd.to_numeric(pool["连板数"], errors="coerce") == 1]
         print(f"首板池: {len(pool)} 只（首板专项模式）")
+    elif args.max_boards:
+        if "连板数" in pool.columns:
+            pool = pool[pd.to_numeric(pool["连板数"], errors="coerce") <= args.max_boards]
+        print(f"低位池: {len(pool)} 只（1-{args.max_boards}板，不做高位）")
     else:
         print(f"涨停池: {len(pool)} 只")
 
@@ -124,7 +130,8 @@ def main():
     mom5_map, lim10_map = v2_factors(date)
     scored = M.score_pool(pool, total_limit_up=len(pool),
                           mom5_map=mom5_map, lim10_map=lim10_map,
-                          first_board_mode=args.first_board)
+                          first_board_mode=args.first_board,
+                          low_board_mode=args.max_boards > 0)
     out = scored.copy()
     out["代码"] = out["代码"].astype(str).str.zfill(6)
 
