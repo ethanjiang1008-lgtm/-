@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
-"""8 因子评分模型：输入涨停池 DataFrame，输出每只股票的因子分、综合分、概率、评级。"""
+"""v2 评分模型（东财涨停池 8+2 因子）：输入涨停池 DataFrame，输出每只股票的
+因子分、综合分、概率、评级与预测理由。
+
+v2 升级（2026-09）：
+  - 新增因子：近10日涨停次数（涨停频率）、5日动量（回测证实区分度最强）
+  - 连板身位拉开差距（6板+ 10 / 5板 9 / 4板 8 / 3板 7 / 2板 6 / 1板 5）
+  - 首板专项模式：涨停频率绝对主导（首板晋级二板最强因子）
+  - 每只股票输出中文「预测理由」
+"""
 
 import pandas as pd
 import config as C
@@ -39,10 +47,32 @@ def score_quality(bomb_times) -> float:
 
 
 def score_board_position(boards: int) -> float:
-    """连板身位：1板=6，2板=8，3板=9，4板+=10。"""
-    if boards >= 4:
+    """连板身位（v2 拉开差距）：1板=5，2板=6，3板=7，4板=8，5板=9，6板+=10。"""
+    if boards >= 6:
         return 10.0
-    return float(C.BOARD_POSITION_SCORE.get(boards, 6))
+    return float(C.BOARD_POSITION_SCORE.get(boards, 5))
+
+
+def score_mom5(mom5) -> float:
+    """5日动量（回测实测：动量越高晋级率越高）。"""
+    if mom5 is None or (isinstance(mom5, float) and pd.isna(mom5)):
+        return 6.0
+    v = float(mom5)
+    for lo, score in C.MOM5_BUCKETS:
+        if v >= lo:
+            return float(score)
+    return 4.0
+
+
+def score_lim10(lim10) -> float:
+    """近10日涨停次数（不含当日；首板晋级二板最强因子）。"""
+    if lim10 is None or (isinstance(lim10, float) and pd.isna(lim10)):
+        return 5.0
+    v = float(lim10)
+    for lo, score in C.LIM10_BUCKETS:
+        if v >= lo:
+            return float(score)
+    return 4.0
 
 
 def score_ladder(top_board_in_theme: int) -> float:
@@ -87,8 +117,16 @@ def score_fund(seal_amount_wan: float) -> float:
 
 # ────────────────────────── 主评分入口 ──────────────────────────
 
-def score_pool(df: pd.DataFrame, total_limit_up: int = None) -> pd.DataFrame:
-    """对涨停池 DataFrame 逐行评分。
+def score_pool(df: pd.DataFrame, total_limit_up: int = None,
+               mom5_map: dict = None, lim10_map: dict = None,
+               first_board_mode: bool = False) -> pd.DataFrame:
+    """对涨停池 DataFrame 逐行评分（v2）。
+
+    新增可选参数：
+      - mom5_map: {代码: 5日涨幅%}，缺失时给中性分
+      - lim10_map: {代码: 近10日涨停次数（不含当日）}，缺失时给中性分
+      - first_board_mode: True 时用「首板专项」评分（涨停频率绝对主导），
+        直接回答「哪些首板大概率晋级二板」
 
     必需列（AKShare stock_zt_pool_em 标准字段）：
       - 代码 / 名称
@@ -180,14 +218,28 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None) -> pd.DataFrame:
     df["连板身位"] = df["连板数"].apply(score_board_position)
     df["资金验证"] = df["封板资金_万"].apply(score_fund)
 
-    # 综合分
-    def _composite(row):
-        total = 0.0
-        for factor, w in C.FACTOR_WEIGHTS.items():
-            total += row[factor] * w
-        return round(10.0 * total, 1)
+    # v2 新因子：5日动量 / 近10日涨停次数
+    def _code(x):
+        return str(x).strip().zfill(6)
+    df["_code6"] = df["代码"].apply(_code)
+    df["5日动量"] = df["_code6"].map(mom5_map or {}).apply(score_mom5)
+    df["涨停频率"] = df["_code6"].map(lim10_map or {}).apply(score_lim10)
+    df["动量值"] = df["_code6"].map(mom5_map or {})
+    df["涨停次数"] = df["_code6"].map(lim10_map or {})
 
-    df["综合分"] = df.apply(_composite, axis=1)
+    # 综合分（v2；首板专项用涨停频率绝对主导）
+    if first_board_mode:
+        # 首板池内连板身位恒为 5 分，不参与区分；
+        # lim10 绝对主导（回测：lim10≥3 时首板 TOP1 命中率 26.7% vs 基准 16.4%）
+        df["综合分"] = (df["涨停频率"] * 10.0 + df["5日动量"] * 0.5
+                        + df["封板时间"] * 0.2 + df["封板质量"] * 0.2).round(2)
+    else:
+        def _composite(row):
+            total = 0.0
+            for factor, w in C.FACTOR_WEIGHTS.items():
+                total += row[factor] * w
+            return round(10.0 * total, 1)
+        df["综合分"] = df.apply(_composite, axis=1)
 
     # 概率校准
     def _prob(row):
@@ -212,10 +264,85 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None) -> pd.DataFrame:
 
     df["评级"] = df["次日连板概率"].apply(_rating)
 
+    # 预测理由（每只股票为什么这么预测）
+    df["预测理由"] = df.apply(lambda r: explain_row(r), axis=1)
+
     # 输出列（保留最新价/成交额，回测取尾盘买入价用）
-    out_cols = ["代码", "名称", "所属行业", "连板数", "首次封板时间",
-                "市场情绪", "题材强度", "板块梯队", "个股身位", "封板时间",
-                "封板质量", "连板身位", "资金验证", "综合分", "次日连板概率", "评级",
+    out_cols = ["代码", "名称", "所属行业", "连板数", "首次封板时间", "涨停次数",
+                "动量值", "市场情绪", "题材强度", "板块梯队", "个股身位", "封板时间",
+                "封板质量", "连板身位", "涨停频率", "5日动量", "资金验证",
+                "综合分", "次日连板概率", "评级", "预测理由",
                 "最新价", "成交额"]
     keep = [c for c in out_cols if c in df.columns]
     return df[keep].sort_values("次日连板概率", ascending=False).reset_index(drop=True)
+
+
+def explain_row(r) -> str:
+    """生成单只股票的预测理由（因子贡献 + 自然语言，可直接展示给用户）。"""
+    parts = []
+    boards = int(r.get("连板数", 1))
+    if boards >= 6:
+        parts.append(f"{boards}板高位龙头，身位优势极大")
+    elif boards == 5:
+        parts.append("5板高度，题材龙头候选")
+    elif boards == 4:
+        parts.append("4板高度，连板梯队前排")
+    elif boards == 3:
+        parts.append("3板高度，连板中位")
+    elif boards == 2:
+        parts.append("2板高度，首板晋级后延续")
+    else:
+        parts.append("首板，连板起点")
+
+    lim10 = r.get("涨停次数")
+    if lim10 is not None and not (isinstance(lim10, float) and pd.isna(lim10)):
+        v = int(round(float(lim10)))
+        if v >= 5:
+            parts.append(f"近10日涨停{v}次，资金反复攻击的强势股")
+        elif v >= 3:
+            parts.append(f"近10日涨停{v}次，近期活跃")
+        elif v == 2:
+            parts.append(f"近10日涨停{v}次，有一定活跃度")
+        else:
+            parts.append("近期首次活跃，缺乏涨停惯性")
+
+    mom = r.get("动量值")
+    if mom is not None and not (isinstance(mom, float) and pd.isna(mom)):
+        v = float(mom)
+        if v >= 30:
+            parts.append(f"5日涨幅{v:.0f}%，主升节奏")
+        elif v >= 15:
+            parts.append(f"5日涨幅{v:.0f}%，趋势向上")
+        elif v >= 0:
+            parts.append(f"5日涨幅{v:.0f}%，温和上行")
+        else:
+            parts.append(f"5日涨幅{v:.0f}%，短期滞涨")
+
+    seal = r.get("封板时间")
+    if isinstance(seal, float) and not pd.isna(seal):
+        if seal >= 9:
+            parts.append("开盘快速封板")
+        elif seal >= 7:
+            parts.append("早盘封板")
+    bomb = r.get("炸板次数")
+    if bomb is not None and not (isinstance(bomb, float) and pd.isna(bomb)):
+        n = int(bomb)
+        if n == 0:
+            parts.append("封板无炸板，封单稳固")
+        elif n >= 2:
+            parts.append(f"炸板{n}次，封板质量一般")
+
+    theme = r.get("所属行业")
+    if theme:
+        parts.append(f"所属{theme}题材")
+
+    mcap = r.get("流通市值_亿")
+    if mcap is not None and not (isinstance(mcap, float) and pd.isna(mcap)):
+        if mcap <= 60:
+            parts.append(f"流通市值{mcap:.0f}亿，小盘弹性")
+        elif mcap >= 300:
+            parts.append(f"流通市值{mcap:.0f}亿，大盘权重")
+
+    if boards >= 6 and lim10 is not None and mom is not None:
+        parts.append("高身位+高频率+强动量共振，次日连板预期最强")
+    return "；".join(parts)
