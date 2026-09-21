@@ -1,6 +1,8 @@
 name: 每日连板预测 v3
 
 on:
+  push:
+    branches: [main]        # 每次推送自动触发（含手动 push / Actions 提交）
   schedule:
     # 北京时间 16:30（UTC 08:30），工作日收盘后自动运行
     - cron: '30 8 * * 1-5'
