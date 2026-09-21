@@ -231,6 +231,9 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None,
     # 综合分（v2；首板专项用涨停频率绝对主导）
     if low_board_mode:
         # 低位模式（1-3板）：身位代理排序主导，回测命中率 47.65%（恰好3板 48.68%）
+        # 注意：实时因子缺失（动量/涨停次数取数失败）时填 0，避免综合分 nan
+        df["涨停次数"] = pd.to_numeric(df["涨停次数"], errors="coerce").fillna(0.0)
+        df["动量值"] = pd.to_numeric(df["动量值"], errors="coerce").fillna(0.0)
         df["综合分"] = (df["连板数"] * 10.0
                         + df["涨停次数"].clip(0, 9)
                         + df["动量值"].clip(0, 50) / 50.0).round(3)
@@ -251,11 +254,18 @@ def score_pool(df: pd.DataFrame, total_limit_up: int = None,
     if low_board_mode:
         df = df[df["连板数"] <= 3].copy()
 
-    # 概率校准
+    # 概率校准（对缺失分数 nan 安全：raw 非有限时回退基准概率，避免 min() 误返回上限）
     def _prob(row):
         boards = int(row["连板数"])
         base = C.BASE_PROMOTION_RATE.get(boards, C.BASE_PROMOTION_RATE[1])
-        raw = base * (C.CALIBRATION_OFFSET + row["综合分"] / 100.0)
+        score = row["综合分"]
+        try:
+            fscore = float(score)
+            if not (fscore == fscore):   # nan 检测
+                return round(base, 4)
+            raw = base * (C.CALIBRATION_OFFSET + fscore / 100.0)
+        except (TypeError, ValueError):
+            return round(base, 4)
         return round(min(C.MAX_PROBABILITY, raw), 4)
 
     df["次日连板概率"] = df.apply(_prob, axis=1)
