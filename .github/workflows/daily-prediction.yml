@@ -1,4 +1,4 @@
-name: 每日连板预测
+name: 每日连板预测 v3
 
 on:
   schedule:
@@ -30,26 +30,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 运行选股模型（生成预测网页）
-        run: python run_daily.py
+      - name: 补拉当日涨停池行情到 v3 缓存
+        run: python patch_v3_today.py || echo "补拉失败（可能是周末/节假日），继续尝试直接预测"
+
+      - name: 运行 v3 选股模型（生成预测网页）
+        run: python run_daily_v3.py || echo "v3 运行失败（数据源未更新则跳过）"
 
       - name: 准备 Pages 产物
         run: |
           mkdir -p public
           # 最新一期作为首页，历史按日期保留
-          ls -t daily_prediction_*.html 2>/dev/null | head -1 | xargs -I{} cp {} public/index.html
-          cp daily_prediction_*.html public/ 2>/dev/null || true
+          ls -t daily_prediction_v3_*.html 2>/dev/null | head -1 | xargs -I{} cp {} public/index.html
+          cp daily_prediction_v3_*.html public/ 2>/dev/null || true
+          cp v3_report.html public/ 2>/dev/null || true
           ls public/
 
       - name: 提交预测网页回仓库
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f daily_prediction_*.html
+          git add -f daily_prediction_v3_*.html
           if git diff --cached --quiet; then
             echo "今日无新预测（可能非交易日或数据未更新）"
           else
-            git commit -m "每日连板预测 $(date +%F)"
+            git commit -m "每日连板预测 v3 $(date +%F)"
             git push
           fi
 

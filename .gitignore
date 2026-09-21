@@ -6,6 +6,10 @@ __pycache__/
 # 全市场日线缓存（69MB，首次运行自动下载生成，不入库）
 bs_daily_all.csv
 
+# v3 并行分片/种子（合并后只保留 bs_daily_v3.csv）
+bs_v3_part*.csv
+bs_daily_v3_new.csv
+
 # 每日预测网页（本地运行生成，不入库；如需示例可手动提交）
 daily_prediction_*.html
 public/
