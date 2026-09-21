@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>首板连板概率模型 · 每日预测 2026-09-21</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+  body { font-family: "Microsoft YaHei", Arial, sans-serif; margin: 0; background: #f0f2f5; color: #1f2329; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 26px 20px 60px; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .sub { color: #646a73; font-size: 13px; margin-bottom: 22px; }
+  .cards { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+  .card { background: #fff; border-radius: 10px; padding: 14px 20px; flex: 1 1 150px;
+          box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .card .v { font-size: 26px; font-weight: 700; color: #1f6feb; }
+  .card .l { font-size: 12px; color: #646a73; margin-top: 3px; }
+  .panel { background: #fff; border-radius: 10px; padding: 16px 18px; margin-bottom: 16px;
+           box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .panel h2 { font-size: 15px; margin: 0 0 10px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .chart { height: 320px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  th, td { border: 1px solid #e5e6eb; padding: 6px 8px; text-align: center; }
+  th { background: #f7f8fa; position: sticky; top: 0; }
+  tr:nth-child(even) td { background: #fafbfc; }
+  .rate { padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11.5px; }
+  .rate-a { background: #ffe9e9; color: #d54941; }
+  .rate-b { background: #fff3d6; color: #b76e00; }
+  .rate-c { background: #e8f1ff; color: #1f6feb; }
+  .rate-d { background: #f2f3f5; color: #8f959e; }
+  .tbl { max-height: 480px; overflow: auto; }
+  .note { font-size: 12px; color: #8f959e; line-height: 1.9; margin-top: 16px; }
+  .disclaimer { background: #fff7ed; border: 1px solid #ffd9a0; border-radius: 8px;
+                padding: 10px 14px; font-size: 12px; color: #9a6700; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>首板连板概率模型 · 每日预测</h1>
+<div class="sub">交易日 2026-09-21 ｜ 依据当日涨停池 8 因子评分 ｜ 预测次日能否继续连板（尾盘买入口径）</div>
+
+<div class="cards">
+  <div class="card"><div class="v">82</div><div class="l">当日涨停池（只）</div></div>
+  <div class="card"><div class="v">65</div><div class="l">其中首板（只）</div></div>
+  <div class="card"><div class="v">17</div><div class="l">连板股（只）</div></div>
+  <div class="card"><div class="v">16</div><div class="l">A+ / A 强预期（只）</div></div>
+  <div class="card"><div class="v">82</div><div class="l">市场涨停家数</div></div>
+  <div class="card"><div class="v">5</div><div class="l">市场最高连板</div></div>
+</div>
+
+<div class="panel">
+<h2>今日 Top10 连板概率预测</h2>
+<div class="grid2">
+  <div class="chart" id="c_prob"></div>
+  <div>
+    <table>
+      <tr><th>#</th><th>代码</th><th>名称</th><th>连板</th><th>题材</th><th>综合分</th><th>概率</th><th>评级</th></tr>
+      <tr><td>1</td><td>000504</td><td><b>南华生物</b></td><td>3板</td><td>医疗服务</td><td>91.0</td><td><b>72.5%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>2</td><td>603230</td><td><b>内蒙新华</b></td><td>4板</td><td>出版</td><td>84.5</td><td><b>72.2%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>3</td><td>002453</td><td><b>华软科技</b></td><td>3板</td><td>化学制品</td><td>87.0</td><td><b>70.6%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>4</td><td>600630</td><td><b>龙头股份</b></td><td>3板</td><td>服装家纺</td><td>86.0</td><td><b>70.1%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>5</td><td>600127</td><td><b>金健米业</b></td><td>3板</td><td>农产品加</td><td>73.5</td><td><b>64.1%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>6</td><td>001376</td><td><b>百通能源</b></td><td>2板</td><td>电力</td><td>82.5</td><td><b>47.0%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>7</td><td>601123</td><td><b>马矿股份</b></td><td>2板</td><td>冶钢原料</td><td>82.0</td><td><b>46.9%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>8</td><td>603001</td><td><b>奥康国际</b></td><td>2板</td><td>服装家纺</td><td>80.5</td><td><b>46.4%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>9</td><td>603316</td><td><b>诚邦股份</b></td><td>2板</td><td>半导体</td><td>78.5</td><td><b>45.7%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr><tr><td>10</td><td>002589</td><td><b>瑞康医药</b></td><td>2板</td><td>医药商业</td><td>77.0</td><td><b>45.2%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td></tr>
+    </table>
+  </div>
+</div>
+</div>
+
+<div class="panel">
+<h2>全部涨停股预测明细（82 只，按概率降序）</h2>
+<div class="tbl">
+<table>
+  <tr><th>#</th><th>代码</th><th>名称</th><th>题材</th><th>连板</th><th>首封</th><th>综合分</th><th>次日连板概率</th><th>评级</th><th>最新价</th></tr>
+<tr><td>1</td><td>000504</td><td>南华生物</td><td>医疗服务</td><td>3板</td><td>09:25</td><td>91.0</td><td><b>72.5%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>11.01</td></tr>
+<tr><td>2</td><td>603230</td><td>内蒙新华</td><td>出版</td><td>4板</td><td>09:25</td><td>84.5</td><td><b>72.2%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>14.83</td></tr>
+<tr><td>3</td><td>002453</td><td>华软科技</td><td>化学制品</td><td>3板</td><td>09:30</td><td>87.0</td><td><b>70.6%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>5.87</td></tr>
+<tr><td>4</td><td>600630</td><td>龙头股份</td><td>服装家纺</td><td>3板</td><td>09:25</td><td>86.0</td><td><b>70.1%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>9.12</td></tr>
+<tr><td>5</td><td>600127</td><td>金健米业</td><td>农产品加</td><td>3板</td><td>10:24</td><td>73.5</td><td><b>64.1%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>15.75</td></tr>
+<tr><td>6</td><td>001376</td><td>百通能源</td><td>电力</td><td>2板</td><td>09:32</td><td>82.5</td><td><b>47.0%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>13.93</td></tr>
+<tr><td>7</td><td>601123</td><td>马矿股份</td><td>冶钢原料</td><td>2板</td><td>09:30</td><td>82.0</td><td><b>46.9%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>19.56</td></tr>
+<tr><td>8</td><td>603001</td><td>奥康国际</td><td>服装家纺</td><td>2板</td><td>09:36</td><td>80.5</td><td><b>46.4%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>11.47</td></tr>
+<tr><td>9</td><td>603316</td><td>诚邦股份</td><td>半导体</td><td>2板</td><td>09:30</td><td>78.5</td><td><b>45.7%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>18.36</td></tr>
+<tr><td>10</td><td>002589</td><td>瑞康医药</td><td>医药商业</td><td>2板</td><td>09:35</td><td>77.0</td><td><b>45.2%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>3.6</td></tr>
+<tr><td>11</td><td>601086</td><td>国芳集团</td><td>一般零售</td><td>2板</td><td>09:36</td><td>76.0</td><td><b>44.9%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>17.67</td></tr>
+<tr><td>12</td><td>601811</td><td>新华文轩</td><td>出版</td><td>2板</td><td>09:30</td><td>74.5</td><td><b>44.4%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>15.29</td></tr>
+<tr><td>13</td><td>603068</td><td>博通集成</td><td>半导体</td><td>2板</td><td>09:34</td><td>73.0</td><td><b>43.9%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>43.79</td></tr>
+<tr><td>14</td><td>600606</td><td>绿地控股</td><td>房地产开</td><td>2板</td><td>11:18</td><td>72.5</td><td><b>43.7%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>1.6</td></tr>
+<tr><td>15</td><td>601579</td><td>会稽山</td><td>非白酒</td><td>2板</td><td>11:18</td><td>72.0</td><td><b>43.6%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>36.12</td></tr>
+<tr><td>16</td><td>001317</td><td>三羊马</td><td>铁路公路</td><td>2板</td><td>10:14</td><td>68.5</td><td><b>42.4%</b></td><td><span class='rate rate-a'>A+ 强预期</span></td><td>59.96</td></tr>
+<tr><td>17</td><td>001216</td><td>华瓷股份</td><td>家居用品</td><td>5板</td><td>09:25</td><td>89.0</td><td><b>23.8%</b></td><td><span class='rate rate-b'>B</span></td><td>24.06</td></tr>
+<tr><td>18</td><td>600825</td><td>新华传媒</td><td>出版</td><td>1板</td><td>09:25</td><td>86.0</td><td><b>23.4%</b></td><td><span class='rate rate-b'>B</span></td><td>5.84</td></tr>
+<tr><td>19</td><td>600721</td><td>百花医药</td><td>医疗服务</td><td>1板</td><td>10:02</td><td>83.5</td><td><b>23.0%</b></td><td><span class='rate rate-b'>B</span></td><td>13.15</td></tr>
+<tr><td>20</td><td>000756</td><td>新华制药</td><td>化学制药</td><td>1板</td><td>09:30</td><td>83.0</td><td><b>22.9%</b></td><td><span class='rate rate-b'>B</span></td><td>14.67</td></tr>
+<tr><td>21</td><td>002622</td><td>皓宸医疗</td><td>医疗服务</td><td>1板</td><td>10:47</td><td>82.5</td><td><b>22.8%</b></td><td><span class='rate rate-b'>B</span></td><td>2.72</td></tr>
+<tr><td>22</td><td>688315</td><td>诺禾致源</td><td>医疗服务</td><td>1板</td><td>09:32</td><td>82.5</td><td><b>22.8%</b></td><td><span class='rate rate-b'>B</span></td><td>18.18</td></tr>
+<tr><td>23</td><td>001234</td><td>泰慕士</td><td>服装家纺</td><td>1板</td><td>10:05</td><td>82.0</td><td><b>22.7%</b></td><td><span class='rate rate-b'>B</span></td><td>26.59</td></tr>
+<tr><td>24</td><td>002172</td><td>澳洋健康</td><td>医疗服务</td><td>1板</td><td>09:30</td><td>82.0</td><td><b>22.7%</b></td><td><span class='rate rate-b'>B</span></td><td>5.81</td></tr>
+<tr><td>25</td><td>600785</td><td>新华百货</td><td>一般零售</td><td>1板</td><td>09:53</td><td>81.5</td><td><b>22.6%</b></td><td><span class='rate rate-b'>B</span></td><td>11.35</td></tr>
+<tr><td>26</td><td>002084</td><td>海鸥住工</td><td>家居用品</td><td>1板</td><td>09:48</td><td>81.0</td><td><b>22.6%</b></td><td><span class='rate rate-b'>B</span></td><td>6.12</td></tr>
+<tr><td>27</td><td>600281</td><td>华阳新材</td><td>小金属</td><td>1板</td><td>09:41</td><td>79.5</td><td><b>22.3%</b></td><td><span class='rate rate-b'>B</span></td><td>4.98</td></tr>
+<tr><td>28</td><td>600613</td><td>神奇制药</td><td>化学制药</td><td>1板</td><td>09:40</td><td>79.5</td><td><b>22.3%</b></td><td><span class='rate rate-b'>B</span></td><td>9.25</td></tr>
+<tr><td>29</td><td>300642</td><td>透景生命</td><td>医疗器械</td><td>1板</td><td>10:20</td><td>79.0</td><td><b>22.2%</b></td><td><span class='rate rate-b'>B</span></td><td>20.35</td></tr>
+<tr><td>30</td><td>920478</td><td>峆一药业</td><td>化学制药</td><td>1板</td><td>09:55</td><td>78.5</td><td><b>22.2%</b></td><td><span class='rate rate-b'>B</span></td><td>12.38</td></tr>
+<tr><td>31</td><td>000566</td><td>海南海药</td><td>化学制药</td><td>1板</td><td>10:54</td><td>78.5</td><td><b>22.2%</b></td><td><span class='rate rate-b'>B</span></td><td>5.07</td></tr>
+<tr><td>32</td><td>002900</td><td>哈三联</td><td>化学制药</td><td>1板</td><td>10:37</td><td>78.5</td><td><b>22.2%</b></td><td><span class='rate rate-b'>B</span></td><td>13.04</td></tr>
+<tr><td>33</td><td>600664</td><td>哈药股份</td><td>化学制药</td><td>1板</td><td>09:31</td><td>78.5</td><td><b>22.2%</b></td><td><span class='rate rate-b'>B</span></td><td>8.25</td></tr>
+<tr><td>34</td><td>000607</td><td>华媒控股</td><td>广告营销</td><td>1板</td><td>09:25</td><td>78.0</td><td><b>22.1%</b></td><td><span class='rate rate-b'>B</span></td><td>4.53</td></tr>
+<tr><td>35</td><td>600743</td><td>华远控股</td><td>房地产服</td><td>1板</td><td>09:25</td><td>77.5</td><td><b>22.0%</b></td><td><span class='rate rate-b'>B</span></td><td>2.33</td></tr>
+<tr><td>36</td><td>300110</td><td>华仁药业</td><td>化学制药</td><td>1板</td><td>10:38</td><td>77.5</td><td><b>22.0%</b></td><td><span class='rate rate-b'>B</span></td><td>3.29</td></tr>
+<tr><td>37</td><td>002367</td><td>康力电梯</td><td>专用设备</td><td>1板</td><td>09:34</td><td>77.5</td><td><b>22.0%</b></td><td><span class='rate rate-b'>B</span></td><td>6.28</td></tr>
+<tr><td>38</td><td>002614</td><td>奥佳华</td><td>其他家电</td><td>1板</td><td>09:30</td><td>77.5</td><td><b>22.0%</b></td><td><span class='rate rate-b'>B</span></td><td>6.25</td></tr>
+<tr><td>39</td><td>001373</td><td>翔腾新材</td><td>光学光电</td><td>1板</td><td>09:49</td><td>77.5</td><td><b>22.0%</b></td><td><span class='rate rate-b'>B</span></td><td>32.44</td></tr>
+<tr><td>40</td><td>603289</td><td>泰瑞机器</td><td>专用设备</td><td>1板</td><td>09:50</td><td>77.0</td><td><b>21.9%</b></td><td><span class='rate rate-b'>B</span></td><td>10.51</td></tr>
+<tr><td>41</td><td>605068</td><td>明新旭腾</td><td>汽车零部</td><td>1板</td><td>09:41</td><td>76.5</td><td><b>21.8%</b></td><td><span class='rate rate-b'>B</span></td><td>21.35</td></tr>
+<tr><td>42</td><td>603636</td><td>南威软件</td><td>IT服务Ⅱ</td><td>1板</td><td>09:34</td><td>75.5</td><td><b>21.7%</b></td><td><span class='rate rate-b'>B</span></td><td>7.28</td></tr>
+<tr><td>43</td><td>603020</td><td>爱普股份</td><td>化学制品</td><td>1板</td><td>11:05</td><td>75.5</td><td><b>21.7%</b></td><td><span class='rate rate-b'>B</span></td><td>12.57</td></tr>
+<tr><td>44</td><td>002178</td><td>延华智能</td><td>软件开发</td><td>1板</td><td>09:33</td><td>75.5</td><td><b>21.7%</b></td><td><span class='rate rate-b'>B</span></td><td>5.08</td></tr>
+<tr><td>45</td><td>002349</td><td>精华制药</td><td>中药Ⅱ</td><td>1板</td><td>09:56</td><td>75.5</td><td><b>21.7%</b></td><td><span class='rate rate-b'>B</span></td><td>8.71</td></tr>
+<tr><td>46</td><td>002585</td><td>双星新材</td><td>塑料</td><td>1板</td><td>09:39</td><td>75.5</td><td><b>21.7%</b></td><td><span class='rate rate-b'>B</span></td><td>12.71</td></tr>
+<tr><td>47</td><td>002022</td><td>科华生物</td><td>医疗器械</td><td>1板</td><td>10:31</td><td>75.0</td><td><b>21.6%</b></td><td><span class='rate rate-b'>B</span></td><td>6.17</td></tr>
+<tr><td>48</td><td>600714</td><td>金瑞矿业</td><td>化学原料</td><td>1板</td><td>10:14</td><td>75.0</td><td><b>21.6%</b></td><td><span class='rate rate-b'>B</span></td><td>19.25</td></tr>
+<tr><td>49</td><td>600301</td><td>华锡有色</td><td>小金属</td><td>1板</td><td>09:25</td><td>75.0</td><td><b>21.6%</b></td><td><span class='rate rate-b'>B</span></td><td>49.97</td></tr>
+<tr><td>50</td><td>002303</td><td>美盈森</td><td>包装印刷</td><td>1板</td><td>09:30</td><td>74.5</td><td><b>21.5%</b></td><td><span class='rate rate-b'>B</span></td><td>6.27</td></tr>
+<tr><td>51</td><td>600503</td><td>华丽家族</td><td>房地产开</td><td>1板</td><td>11:14</td><td>74.5</td><td><b>21.5%</b></td><td><span class='rate rate-b'>B</span></td><td>2.43</td></tr>
+<tr><td>52</td><td>603580</td><td>艾艾精工</td><td>塑料</td><td>1板</td><td>09:31</td><td>74.0</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>71.53</td></tr>
+<tr><td>53</td><td>002869</td><td>金溢科技</td><td>计算机设</td><td>1板</td><td>09:44</td><td>74.0</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>17.04</td></tr>
+<tr><td>54</td><td>603663</td><td>三祥新材</td><td>化学原料</td><td>1板</td><td>09:35</td><td>74.0</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>49.82</td></tr>
+<tr><td>55</td><td>600992</td><td>贵绳股份</td><td>通用设备</td><td>1板</td><td>10:07</td><td>74.0</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>10.57</td></tr>
+<tr><td>56</td><td>002907</td><td>华森制药</td><td>中药Ⅱ</td><td>1板</td><td>10:37</td><td>73.5</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>15.25</td></tr>
+<tr><td>57</td><td>600218</td><td>全柴动力</td><td>汽车零部</td><td>1板</td><td>09:37</td><td>73.5</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>8.27</td></tr>
+<tr><td>58</td><td>600587</td><td>新华医疗</td><td>医疗器械</td><td>1板</td><td>10:30</td><td>73.5</td><td><b>21.4%</b></td><td><span class='rate rate-b'>B</span></td><td>13.4</td></tr>
+<tr><td>59</td><td>002321</td><td>华英农业</td><td>养殖业</td><td>1板</td><td>10:24</td><td>73.0</td><td><b>21.3%</b></td><td><span class='rate rate-b'>B</span></td><td>2.3</td></tr>
+<tr><td>60</td><td>603258</td><td>电魂网络</td><td>游戏Ⅱ</td><td>1板</td><td>09:45</td><td>73.0</td><td><b>21.3%</b></td><td><span class='rate rate-b'>B</span></td><td>14.19</td></tr>
+<tr><td>61</td><td>600812</td><td>华北制药</td><td>化学制药</td><td>1板</td><td>10:17</td><td>73.0</td><td><b>21.3%</b></td><td><span class='rate rate-b'>B</span></td><td>5.08</td></tr>
+<tr><td>62</td><td>002792</td><td>通宇通讯</td><td>通信设备</td><td>1板</td><td>10:12</td><td>73.0</td><td><b>21.3%</b></td><td><span class='rate rate-b'>B</span></td><td>34.54</td></tr>
+<tr><td>63</td><td>001389</td><td>广合科技</td><td>元件</td><td>1板</td><td>09:34</td><td>72.5</td><td><b>21.2%</b></td><td><span class='rate rate-b'>B</span></td><td>185.93</td></tr>
+<tr><td>64</td><td>600894</td><td>广日股份</td><td>专用设备</td><td>1板</td><td>09:49</td><td>72.5</td><td><b>21.2%</b></td><td><span class='rate rate-b'>B</span></td><td>7.92</td></tr>
+<tr><td>65</td><td>603042</td><td>华脉科技</td><td>通信设备</td><td>1板</td><td>09:49</td><td>72.5</td><td><b>21.2%</b></td><td><span class='rate rate-b'>B</span></td><td>19.03</td></tr>
+<tr><td>66</td><td>002388</td><td>新亚制程</td><td>其他电子</td><td>1板</td><td>09:58</td><td>72.5</td><td><b>21.2%</b></td><td><span class='rate rate-b'>B</span></td><td>7.95</td></tr>
+<tr><td>67</td><td>301008</td><td>宏昌科技</td><td>家电零部</td><td>1板</td><td>10:08</td><td>72.0</td><td><b>21.1%</b></td><td><span class='rate rate-b'>B</span></td><td>54.25</td></tr>
+<tr><td>68</td><td>002724</td><td>海洋王</td><td>照明设备</td><td>1板</td><td>10:01</td><td>71.0</td><td><b>21.0%</b></td><td><span class='rate rate-b'>B</span></td><td>7.84</td></tr>
+<tr><td>69</td><td>000020</td><td>深华发Ａ</td><td>光学光电</td><td>1板</td><td>11:17</td><td>71.0</td><td><b>21.0%</b></td><td><span class='rate rate-b'>B</span></td><td>14.26</td></tr>
+<tr><td>70</td><td>603395</td><td>红四方</td><td>农化制品</td><td>1板</td><td>11:06</td><td>71.0</td><td><b>21.0%</b></td><td><span class='rate rate-b'>B</span></td><td>28.14</td></tr>
+<tr><td>71</td><td>603151</td><td>邦基科技</td><td>饲料</td><td>1板</td><td>10:28</td><td>70.5</td><td><b>20.9%</b></td><td><span class='rate rate-b'>B</span></td><td>18.35</td></tr>
+<tr><td>72</td><td>603319</td><td>美湖股份</td><td>汽车零部</td><td>1板</td><td>09:42</td><td>70.5</td><td><b>20.9%</b></td><td><span class='rate rate-b'>B</span></td><td>32.18</td></tr>
+<tr><td>73</td><td>603819</td><td>神力股份</td><td>电机Ⅱ</td><td>1板</td><td>11:00</td><td>69.5</td><td><b>20.7%</b></td><td><span class='rate rate-b'>B</span></td><td>17.33</td></tr>
+<tr><td>74</td><td>688026</td><td>洁特生物</td><td>医疗器械</td><td>1板</td><td>10:02</td><td>68.5</td><td><b>20.6%</b></td><td><span class='rate rate-b'>B</span></td><td>25.22</td></tr>
+<tr><td>75</td><td>002246</td><td>北化股份</td><td>化学制品</td><td>1板</td><td>10:32</td><td>68.0</td><td><b>20.5%</b></td><td><span class='rate rate-b'>B</span></td><td>26.27</td></tr>
+<tr><td>76</td><td>600712</td><td>南宁百货</td><td>一般零售</td><td>1板</td><td>10:33</td><td>68.0</td><td><b>20.5%</b></td><td><span class='rate rate-b'>B</span></td><td>5.89</td></tr>
+<tr><td>77</td><td>002860</td><td>星帅尔</td><td>家电零部</td><td>1板</td><td>09:31</td><td>68.0</td><td><b>20.5%</b></td><td><span class='rate rate-b'>B</span></td><td>18.39</td></tr>
+<tr><td>78</td><td>000829</td><td>天音控股</td><td>专业连锁</td><td>1板</td><td>10:19</td><td>68.0</td><td><b>20.5%</b></td><td><span class='rate rate-b'>B</span></td><td>9.77</td></tr>
+<tr><td>79</td><td>688137</td><td>近岸蛋白</td><td>生物制品</td><td>1板</td><td>10:33</td><td>67.5</td><td><b>20.4%</b></td><td><span class='rate rate-b'>B</span></td><td>118.84</td></tr>
+<tr><td>80</td><td>300426</td><td>华智数媒</td><td>影视院线</td><td>1板</td><td>11:10</td><td>67.5</td><td><b>20.4%</b></td><td><span class='rate rate-b'>B</span></td><td>8.8</td></tr>
+<tr><td>81</td><td>688112</td><td>鼎阳科技</td><td>通用设备</td><td>1板</td><td>09:38</td><td>66.5</td><td><b>20.2%</b></td><td><span class='rate rate-b'>B</span></td><td>91.79</td></tr>
+<tr><td>82</td><td>600593</td><td>大连圣亚</td><td>旅游及景</td><td>1板</td><td>09:51</td><td>63.5</td><td><b>19.8%</b></td><td><span class='rate rate-c'>C</span></td><td>48.57</td></tr>
+</table>
+</div>
+</div>
+
+<div class="panel"><h2>评级分布 & 题材分布 & 连板身位分布</h2>
+<div class="grid2">
+  <div class="chart" id="c_rating"></div>
+  <div class="chart" id="c_theme"></div>
+  <div class="chart" id="c_board" style="grid-column: 1 / -1;"></div>
+</div>
+</div>
+
+<div class="note">
+<b>模型口径：</b>8 因子加权（题材强度 20% / 市场情绪 15% / 个股身位 15% / 封板时间 15% / 封板质量 10% / 板块梯队 10% / 连板身位 10% / 资金验证 5%）→ 综合分 → 按连板身位基准晋级率校准为次日连板概率。
+历史回测（1 年，319 交易日）：全池 Top5 次日连板命中率 38.81%（基准 20.79%）；首板专项 8 因子版 22.39%（基准 15.81%）。
+本页为模型输出，非投资建议。
+</div>
+<div class="disclaimer">⚠️ 免责声明：模型基于历史统计规律，回测结果不代表未来收益。市场有风险，入市需谨慎。</div>
+</div>
+
+<script>
+(function() {
+  var opts = {
+    c_prob: {"tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}}, "grid": {"left": 70, "right": 20, "top": 10, "bottom": 30}, "xAxis": {"type": "value", "name": "概率 %", "max": 100}, "yAxis": {"type": "category", "inverse": true, "data": ["南华生物 000504", "内蒙新华 603230", "华软科技 002453", "龙头股份 600630", "金健米业 600127", "百通能源 001376", "马矿股份 601123", "奥康国际 603001", "诚邦股份 603316", "瑞康医药 002589", "国芳集团 601086", "新华文轩 601811", "博通集成 603068", "绿地控股 600606", "会稽山 601579"]}, "series": [{"type": "bar", "data": [72.5, 72.2, 70.6, 70.1, 64.1, 47.0, 46.9, 46.4, 45.7, 45.2, 44.9, 44.4, 43.9, 43.7, 43.6], "label": {"show": true, "position": "right", "formatter": "{c}%"}, "itemStyle": {"color": "#1f6feb"}}]},
+    c_rating: {"tooltip": {"trigger": "item"}, "legend": {"bottom": 0}, "series": [{"type": "pie", "radius": ["35%", "62%"], "data": [{"name": "A+ 强预期", "value": 16}, {"name": "B", "value": 65}, {"name": "C", "value": 1}], "label": {"formatter": "{b}\n{c}只"}}]},
+    c_theme: {"tooltip": {"trigger": "axis"}, "grid": {"left": 70, "right": 20, "top": 10, "bottom": 30}, "xAxis": {"type": "value"}, "yAxis": {"type": "category", "inverse": true, "data": ["化学制药", "医疗服务", "医疗器械", "出版", "化学制品", "服装家纺", "一般零售", "专用设备", "汽车零部", "半导体"]}, "series": [{"type": "bar", "data": [8, 5, 4, 3, 3, 3, 3, 3, 3, 2], "itemStyle": {"color": "#34c724"}}]},
+    c_board: {"tooltip": {"trigger": "axis"}, "grid": {"left": 50, "right": 20, "top": 10, "bottom": 30}, "xAxis": {"type": "category", "data": ["1板", "2板", "3板", "4板", "5板"]}, "yAxis": {"type": "value"}, "series": [{"type": "bar", "data": [65, 11, 4, 1, 1], "itemStyle": {"color": "#ff8a00"}}]}
+  };
+  for (var k in opts) {
+    var el = document.getElementById(k);
+    if (el && typeof echarts !== 'undefined') echarts.init(el).setOption(opts[k]);
+  }
+})();
+</script>
+</body>
+</html>
