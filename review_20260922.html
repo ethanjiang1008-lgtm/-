@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>预测复盘 · 09-21 → 09-22</title><style>body{font-family:"Microsoft YaHei",sans-serif;margin:0;background:#f5f6fa;color:#222}
+.wrap{max-width:1080px;margin:0 auto;padding:18px}
+h1{font-size:22px}
+.sub{color:#666;font-size:13px;margin-bottom:16px}
+.panel{background:#fff;border-radius:10px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.panel h2{font-size:16px;margin:0 0 10px;border-left:4px solid #d23a2e;padding-left:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid #eee;vertical-align:top}
+th{background:#fafbfc}
+.up{color:#0b7a3b;font-weight:700}
+.down{color:#d23a2e;font-weight:700}
+.no .reason{color:#999}
+.ok td:first-child{font-weight:700}
+.note{color:#999;font-size:11px}
+.reason{color:#666;font-size:12px;margin-top:3px}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;background:#f0f7ff;color:#1a7fd1;margin-bottom:2px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.card{background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center}
+.card .num{font-size:26px;font-weight:700;color:#d23a2e}
+.card .num.g{color:#0b7a3b}
+.card .lbl{color:#888;font-size:12px;margin-top:2px}
+.note2{color:#888;font-size:12px}</style></head><body><div class="wrap">
+<h1>预测复盘：2026-09-21 榜单 → 09-22 实际表现</h1>
+<div class="sub">口径：昨日收盘后预测（尾盘买入）→ 今日收盘仍涨停 = 命中（与回测一致）· 今日全市场涨停 63 只 · 数据源：东方财富涨停池</div>
+
+<div class="cards">
+  <div class="card"><div class="num">100</div><div class="lbl">昨日预测(1-3板池)</div></div>
+  <div class="card"><div class="num g">22</div><div class="lbl">今日晋级涨停</div></div>
+  <div class="card"><div class="num g">22.0%</div><div class="lbl">总命中率</div></div>
+  <div class="card"><div class="num g">✓</div><div class="lbl">TOP1 命中 (100%)</div></div>
+  <div class="card"><div class="num">33%</div><div class="lbl">TOP3 (1/3)</div></div>
+  <div class="card"><div class="num">20%</div><div class="lbl">TOP10 (2/10)</div></div>
+  <div class="card"><div class="num">30%</div><div class="lbl">TOP20 (6/20)</div></div>
+</div>
+
+<div class="panel"><h2>① 分位段命中（TOP 区间）</h2>
+<table><tr><th>区间</th><th>命中</th><th>命中率</th></tr>
+<tr><td>TOP1（南华生物 55.9%）</td><td>1/1</td><td class="up">100%</td></tr>
+<tr><td>TOP3</td><td>1/3</td><td class="down">33.3%</td></tr>
+<tr><td>TOP5</td><td>1/5</td><td class="down">20.0%</td></tr>
+<tr><td>TOP10</td><td>2/10</td><td class="down">20.0%</td></tr>
+<tr><td>TOP20</td><td>6/20</td><td class="down">30.0%</td></tr>
+</table>
+<div class="note2">单日样本量小（n=100），命中率随行情波动大；今日全市场涨停 63 家（昨日 103 家），情绪转冷，晋级整体偏弱。</div></div>
+
+<div class="panel"><h2>② 分身位命中</h2>
+<table><tr><th>身位</th><th>样本</th><th>命中率</th><th>参考</th></tr><tr><td>1板</td><td>82</td><td class='ok'>17/82 = 20.7%</td><td>回测基准 16.4%</td></tr><tr><td>2板</td><td>13</td><td class='ok'>4/13 = 30.8%</td><td>回测基准 29.6%</td></tr><tr><td>3板</td><td>5</td><td class='ok'>1/5 = 20.0%</td><td>回测基准 43.1%</td></tr></table></div>
+
+<div class="panel"><h2>③ 校准检验（预测概率档 vs 实际命中率）</h2>
+<table><tr><th>预测档</th><th>样本</th><th>预测均值</th><th>实际命中率</th><th>偏差</th></tr><tr><td>≥50% (A+强预期)</td><td>4</td><td>54.4%</td><td class='down'>25.0%</td><td>-29.4pp</td></tr><tr><td>30-50% (B)</td><td>14</td><td>38.0%</td><td class='down'>28.6%</td><td>-9.5pp</td></tr><tr><td>20-30% (C)</td><td>74</td><td>21.8%</td><td class='ok'>18.9%</td><td>-2.9pp</td></tr><tr><td><20% (D)</td><td>8</td><td>16.2%</td><td class='up'>37.5%</td><td>+21.2pp</td></tr></table>
+<div class="note2">单日观察：A+档(≥50%) 今天 4 中 1（25%），低于一年回测的 56%——3板今日仅南华生物晋级；&lt;20% 档 8 中 3 属运气波动。单日不能定结论，但提示：市场转冷日高身位晋级率会明显回落。</div></div>
+
+<div class="panel"><h2>④ 重点个股观察</h2>
+<table><tr><th>#</th><th>股票</th><th>预测概率</th><th>综合分</th><th>预测理由</th><th>结果</th></tr><tr class='ok'><td>1</td><td><b>南华生物</b><br><span class='note'>000504 · 医疗服务 · 3板</span></td><td>55.9%</td><td>8.4</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增3板，连板中位；换手率1.6%极低，惜售锁筹（回测晋级率43%）；消息面：业绩预增；（异动拉升！000504，3连板！；南华生物000504龙虎榜数据09-21)；南）；所属医疗服务题材；同身位高分位，连板预期强</div></td><td>✓ 晋级</td></tr>
+<tr class='no'><td>2</td><td><b>华软科技</b><br><span class='note'>002453 · 化学制品 · 3板</span></td><td>55.9%</td><td>8.15</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增3板，连板中位；消息面：业绩预增；（华软科技002453龙虎榜数据09-18)；华软科技002453.SZ)：202）；所属化学制品题材；同身位高分位，连板预期强</div></td><td>— 未涨停</td></tr>
+<tr class='no'><td>3</td><td><b>龙头股份</b><br><span class='note'>600630 · 服装家纺 · 3板</span></td><td>55.9%</td><td>7.85</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增3板，连板中位；消息面：业绩预增；（龙头股份600630龙虎榜数据09-18)；龙头股份600630龙虎榜数据09-）；所属服装家纺题材；同身位高分位，连板预期强</div></td><td>— 未涨停</td></tr>
+<tr class='no'><td>4</td><td><b>华纺股份</b><br><span class='note'>600448 · 纺织制造 · 3板</span></td><td>50.0%</td><td>7.45</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增3板，连板中位；换手率39.3%过高，分歧大晋级率低；消息面：业绩预增；（华纺股份600448龙虎榜数据09-21)；华纺股份600448龙虎榜数据09-）；所属纺织制造题材；同身位高分位，连板预期强</div></td><td>— 未涨停</td></tr>
+<tr class='no'><td>5</td><td><b>会稽山</b><br><span class='note'>601579 · 非白酒 · 2板</span></td><td>39.9%</td><td>8.5</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增2板，首板晋级后延续；消息面：业绩预增；（会稽山601579龙虎榜数据09-21；会稽山601579龙虎榜数据09-16；）；所属非白酒题材；同身位中高分位</div></td><td>— 未涨停</td></tr>
+<tr class='ok'><td>8</td><td><b>新华文轩</b><br><span class='note'>601811 · 出版 · 2板</span></td><td>38.8%</td><td>7.3</td><td><span class='tag ev'>重组/收购</span><div class='reason'>重组/收购2板，首板晋级后延续；消息面：重组/收购；（新华文轩601811龙虎榜数据09-21；新华文轩601811.SH)：2026）；所属出版题材；同身位中高分位</div></td><td>✓ 晋级</td></tr>
+<tr class='no'><td>9</td><td><b>华金资本</b><br><span class='note'>000532 · 多元金融 · 2板</span></td><td>38.8%</td><td>7.1</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增2板，首板晋级后延续；换手率16.4%过高，分歧大晋级率低；消息面：业绩预增；（000532尾盘直线涨停！投资者：发生了什么？；华金资本000532.SZ)：2）；所属多元金融题材；同身位中高分位</div></td><td>— 未涨停</td></tr>
+<tr class='ok'><td>19</td><td><b>新华传媒</b><br><span class='note'>600825 · 出版 · 1板</span></td><td>25.2%</td><td>8.62</td><td><span class='tag ev'>重组/收购</span><div class='reason'>重组/收购首板，连板起点；换手率0.2%极低，惜售锁筹（回测晋级率43%）；消息面：重组/收购；（惊天重组！600825开盘涨停，封单额超100亿元；600825，收购公布，下周）；封单强度41%，封单充裕；所属出版题材</div></td><td>✓ 晋级</td></tr>
+<tr class='no'><td>55</td><td><b>华锡有色</b><br><span class='note'>600301 · 小金属 · 1板</span></td><td>21.8%</td><td>6.73</td><td><span class='tag ev'>重组/收购</span><div class='reason'>重组/收购首板，连板起点；换手率2.1%，筹码稳定（回测晋级率28%）；消息面：重组/收购；（600301，将迎大央企入主；明日复牌！600301，控制权拟变更；600301）；所属小金属题材；同身位低分位，晋级概率有限</div></td><td>— 未涨停</td></tr></table>
+<div class="note2">南华生物（TOP1）如期 3→4 板；新华传媒（用户关注的重组股，预测 25.2%）今日晋级 2 板；华软科技/龙头股份/会稽山等高预期股未晋级——高身位单日晋级波动大。</div></div>
+
+<div class="panel"><h2>⑤ 全部命中明细（22 只）</h2>
+<table><tr><th>#</th><th>股票</th><th>预测概率</th><th>综合分</th><th>预测理由</th><th>结果</th></tr><tr class='ok'><td>1</td><td><b>南华生物</b><br><span class='note'>000504 · 医疗服务 · 3板</span></td><td>55.9%</td><td>8.4</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增3板，连板中位；换手率1.6%极低，惜售锁筹（回测晋级率43%）；消息面：业绩预增；（异动拉升！000504，3连板！；南华生物000504龙虎榜数据09-21)；南）；所属医疗服务题材；同身位高分位，连板预期强</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>8</td><td><b>新华文轩</b><br><span class='note'>601811 · 出版 · 2板</span></td><td>38.8%</td><td>7.3</td><td><span class='tag ev'>重组/收购</span><div class='reason'>重组/收购2板，首板晋级后延续；消息面：重组/收购；（新华文轩601811龙虎榜数据09-21；新华文轩601811.SH)：2026）；所属出版题材；同身位中高分位</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>11</td><td><b>博通集成</b><br><span class='note'>603068 · 半导体 · 2板</span></td><td>38.8%</td><td>7.0</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增2板，首板晋级后延续；消息面：业绩预增；（博通集成603068.SH)：2026年中报净利润为5050.16万元；机构风向）；所属半导体题材；同身位中高分位</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>12</td><td><b>三羊马</b><br><span class='note'>001317 · 铁路公路 · 2板</span></td><td>38.8%</td><td>7.0</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增2板，首板晋级后延续；消息面：业绩预增；（三羊马001317龙虎榜数据09-21；三羊马001317.SZ)：2026年中）；所属铁路公路题材；同身位中高分位</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>16</td><td><b>大亚圣象</b><br><span class='note'>000910 · 家居用品 · 2板</span></td><td>37.9%</td><td>6.65</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增2板，首板晋级后延续；消息面：业绩预增；（大亚圣象000910.SZ)2026年中报净利润为-1.94亿元，由盈转亏；今日）；所属家居用品题材；同身位中高分位</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>19</td><td><b>新华传媒</b><br><span class='note'>600825 · 出版 · 1板</span></td><td>25.2%</td><td>8.62</td><td><span class='tag ev'>重组/收购</span><div class='reason'>重组/收购首板，连板起点；换手率0.2%极低，惜售锁筹（回测晋级率43%）；消息面：重组/收购；（惊天重组！600825开盘涨停，封单额超100亿元；600825，收购公布，下周）；封单强度41%，封单充裕；所属出版题材</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>22</td><td><b>华远控股</b><br><span class='note'>600743 · 房地产服 · 1板</span></td><td>21.8%</td><td>7.15</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率0.7%极低，惜售锁筹（回测晋级率43%）；消息面：业绩预增；（600743，变更控股股东，今年曾六连板；600743：29.9%股权拟划转金融）；所属房地产服题材；同身位低分位，晋级概率有</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>23</td><td><b>新华制药</b><br><span class='note'>000756 · 化学制药 · 1板</span></td><td>21.8%</td><td>7.15</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率4.3%，筹码稳定（回测晋级率28%）；消息面：业绩预增；（000756：周末披露连续斩获三张药品注册证书，涉及阿尔茨海默病等；新华制药00）；所属化学制药题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>28</td><td><b>奥佳华</b><br><span class='note'>002614 · 其他家电 · 1板</span></td><td>21.8%</td><td>7.05</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率2.5%，筹码稳定（回测晋级率28%）；消息面：业绩预增；（奥佳华002614.SZ)2026年中报净利润为-7392.40万元，由盈转亏；）；所属其他家电题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>31</td><td><b>泰慕士</b><br><span class='note'>001234 · 服装家纺 · 1板</span></td><td>21.8%</td><td>7.05</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率3.7%，筹码稳定（回测晋级率28%）；消息面：业绩预增；（泰慕士001234.SZ)：2026年中报净利润为2328.40万元、同比较去年）；所属服装家纺题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>35</td><td><b>美盈森</b><br><span class='note'>002303 · 包装印刷 · 1板</span></td><td>21.8%</td><td>7.0</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率3.2%，筹码稳定（回测晋级率28%）；消息面：业绩预增；（美盈森002303.SZ)2026年中报净利润为1.30亿元、较去年同期下降26）；所属包装印刷题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>40</td><td><b>华媒控股</b><br><span class='note'>000607 · 广告营销 · 1板</span></td><td>21.8%</td><td>6.85</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率2.6%，筹码稳定（回测晋级率28%）；消息面：业绩预增；（华媒控股000607.SZ)：2026年中报净利润为-1603.34万元，同比亏）；所属广告营销题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>59</td><td><b>延华智能</b><br><span class='note'>002178 · 软件开发 · 1板</span></td><td>21.8%</td><td>6.63</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；消息面：业绩预增；（延华智能002178.SZ)：2026年中报净利润为-1137.19万元，同比由）；所属软件开发题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>65</td><td><b>升达林业</b><br><span class='note'>002259 · 燃气Ⅱ · 1板</span></td><td>21.8%</td><td>6.63</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；消息面：业绩预增；（机构风向标 | 升达林业0022592026年二季度已披露持仓机构仅4家；升达林）；所属燃气Ⅱ题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>70</td><td><b>哈药股份</b><br><span class='note'>600664 · 化学制药 · 1板</span></td><td>21.8%</td><td>6.55</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；消息面：业绩预增；（涨停潮来袭！600664，百万手封板；哈药股份600664.SH)：2026年中）；所属化学制药题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>71</td><td><b>艾艾精工</b><br><span class='note'>603580 · 塑料 · 1板</span></td><td>21.8%</td><td>6.55</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；消息面：业绩预增；（机构风向标 | 艾艾精工6035802026年二季度已披露持仓机构仅1家；艾艾精）；所属塑料题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>75</td><td><b>爱普股份</b><br><span class='note'>603020 · 化学制品 · 1板</span></td><td>21.8%</td><td>6.55</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；消息面：业绩预增；（爱普股份603020龙虎榜数据09-14)；爱普股份603020.SH)2026）；所属化学制品题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>85</td><td><b>南威软件</b><br><span class='note'>603636 · IT服务Ⅱ · 1板</span></td><td>21.8%</td><td>6.43</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；消息面：业绩预增；（南威软件603636.SH)2026年中报净利润为-1.70亿元，同比亏损放大；）；所属IT服务Ⅱ题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>92</td><td><b>我爱我家</b><br><span class='note'>000560 · 房地产服 · 1板</span></td><td>21.8%</td><td>6.15</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率18.6%过高，分歧大晋级率低；消息面：业绩预增；（我爱我家000560龙虎榜数据09-21)；久违回暖！房地产板块午后走强，000）；所属房地产服题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>94</td><td><b>华丽家族</b><br><span class='note'>600503 · 房地产开 · 1板</span></td><td>16.6%</td><td>6.05</td><td><div class='reason'>首板，连板起点；所属房地产开题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>95</td><td><b>百花医药</b><br><span class='note'>600721 · 医疗服务 · 1板</span></td><td>16.6%</td><td>5.95</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率29.0%过高，分歧大晋级率低；消息面：业绩预增；（百花医药600721龙虎榜数据09-21；8月曾走出7连板，600721股价再异）；所属医疗服务题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr>
+<tr class='ok'><td>98</td><td><b>华仁药业</b><br><span class='note'>300110 · 化学制药 · 1板</span></td><td>15.9%</td><td>5.75</td><td><span class='tag ev'>业绩预增</span><div class='reason'>业绩预增首板，连板起点；换手率15.9%过高，分歧大晋级率低；消息面：业绩预增；（300110，3分钟“20cm”涨停；华仁药业300110龙虎榜数据09-21；）；所属化学制药题材；同身位低分位，晋级概率有限</div></td><td>✓ 晋级</td></tr></table></div>
+
+<div class="panel"><h2>⑥ 结论与局限</h2>
+<ul>
+<li><b>TOP1 命中</b>：概率排序口径（v3.1）上线后首个交易日，第 1 名南华生物兑现 3→4 板。</li>
+<li><b>整体 22%</b>：接近一年回测全池基准 20.7%，单日波动正常；今日市场涨停家数 103→63 明显降温，晋级环境偏弱。</li>
+<li><b>校准观察</b>：高概率档今天欠收（3板仅 1 只晋级），低概率档 3 只晋级属样本运气；需累计多日才能评估校准质量。</li>
+<li>局限：单日复盘 n=100，统计意义有限；模型概率反映的是"一年平均条件下的条件频率"，单日实现围绕期望值大幅波动。</li>
+<li>建议：连续记录每日命中，形成滚动命中曲线后再评估调参。</li>
+</ul></div>
+</div></body></html>

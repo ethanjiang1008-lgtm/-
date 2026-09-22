@@ -10,6 +10,7 @@
 """
 import argparse
 import os
+import sys
 import time
 
 import pandas as pd
@@ -90,8 +91,8 @@ def main():
 
     pool = F.limit_up_pool(date)
     if pool.empty:
-        print("!! 该日无涨停池数据（可能非交易日或数据源未更新）")
-        return
+        print(f"!! 该日无涨停池数据（{date} 为交易日，说明东财接口异常或当日数据未就绪）")
+        sys.exit(1)
 
     if args.first_board:
         pool = pool[pd.to_numeric(pool["连板数"], errors="coerce") == 1]

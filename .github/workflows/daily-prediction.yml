@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]        # 每次推送自动触发（含手动 push / Actions 提交）
   schedule:
-    # 北京时间 16:30（UTC 08:30），工作日收盘后自动运行
-    - cron: '30 8 * * 1-5'
+    # 北京时间 18:30（UTC 10:30），工作日收盘后自动运行（避开 baostock/东财数据更新延迟）
+    - cron: '30 10 * * 1-5'
   workflow_dispatch:   # 支持手动触发
 
 permissions:
@@ -36,7 +36,8 @@ jobs:
         run: python patch_v3_today.py || echo "补拉失败（可能是周末/节假日），继续尝试直接预测"
 
       - name: 运行 v3 选股模型（生成预测网页）
-        run: python run_daily_v3.py || echo "v3 运行失败（数据源未更新则跳过）"
+        run: |
+          python run_daily_v3.py || { echo "!! v3 预测失败：当日数据缺失或接口异常（不再静默跳过，请查日志）"; exit 1; }
 
       - name: 准备 Pages 产物
         run: |
