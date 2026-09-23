@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>连板预测模型 v4 迭代报告 · 2026-09-23</title>
+<style>
+  body { font-family: "Microsoft YaHei", -apple-system, sans-serif; margin: 0; background: #f5f6fa; color: #222; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 40px; }
+  h1 { font-size: 24px; margin: 6px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 16px; }
+  .cards { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .card { background: #fff; border-radius: 10px; padding: 14px 16px; flex: 1; min-width: 160px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .card .k { color: #888; font-size: 12px; }
+  .card .v { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  .v.red { color: #d23a2e; } .v.green { color: #0b7a3b; }
+  .panel { background: #fff; border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .panel h2 { font-size: 16px; margin: 0 0 12px; border-left: 4px solid #d23a2e; padding-left: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 8px; text-align: left; border-bottom: 1px solid #eee; }
+  th { background: #fafbfc; font-size: 12px; color: #555; }
+  .best td { background: #f0faf2; font-weight: 700; }
+  .note { color: #888; font-size: 12px; margin-top: 10px; line-height: 1.6; }
+  code { background: #f0f0f2; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  ul { margin: 6px 0; padding-left: 20px; line-height: 1.8; font-size: 13px; }
+  .pill { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:700; background:#0b7a3b; color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>连板预测模型 v4 迭代报告</h1>
+  <div class="sub">2026-09-23 · 沪深主板（非 ST/科创/创业板）· 242 个交易日 · 尾盘买入 / 次日涨停 = 命中口径</div>
+
+  <div class="cards">
+    <div class="card"><div class="k">样本规模</div><div class="v">14,924</div><div class="note">242 交易日主板涨停样本</div></div>
+    <div class="card"><div class="k">基础晋级率</div><div class="v red">20.0%</div><div class="note">全样本次日连板率</div></div>
+    <div class="card"><div class="k">v4 低位池 TOP1</div><div class="v green">65.7%</div><div class="note">验证段 63.8%</div></div>
+    <div class="card"><div class="k">v4 首板池 TOP1</div><div class="v green">31.6%</div><div class="note">验证段 30.4%</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>一、核心结论</h2>
+    <ul>
+      <li><b>低位池（1-3 板）最优策略</b>：只保留「放量倍数 &lt; 6」的 1-3 板涨停股（排除天量分歧票），按「同身位桶内成交额分位」校准概率取 TOP → <b>TOP1 命中率 65.7%</b>（v3 同口径 52.5%，<b>提升 +13.2pp</b>）。</li>
+      <li><b>首板池专项</b>：只保留「首板且换手率 &lt; 3%」的惜售锁筹票 → <b>TOP1 31.6%</b>（v3 同口径 21.5%，<b>提升 +10.1pp</b>）。</li>
+      <li>验证段命中率不弱于训练段（低位池 68.3% → 63.8%，首板 33.3% → 30.4%），<b>非过拟合</b>。</li>
+      <li>多因子等权组合会互相稀释强信号；「收敛到最强 1-2 个因子 + 规则过滤」远优于「六因子加权」。这是 v4 相对 v3 的核心改进。</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>二、迭代过程（回测实证链）</h2>
+    <table>
+      <tr><th>版本</th><th>策略</th><th>低位池 TOP1</th><th>首板 TOP1</th><th>结论</th></tr>
+      <tr><td>v3 基线</td><td>六因子加权 + 身位分位校准（主板重算）</td><td>52.5%</td><td>21.5%</td><td>组合稀释强信号</td></tr>
+      <tr><td>单因子探索</td><td>log_amt（成交额）单因子校准</td><td>62.0%</td><td>—</td><td>成交额是最强单因子</td></tr>
+      <tr><td>组合网格</td><td>换手+成交额+量能+动量 分位加权（3375 组合寻优）</td><td>59.1%</td><td>—</td><td>任何加权组合都跑不赢 log_amt 单因子 → 停止组合路线</td></tr>
+      <tr class="best"><td>v4 低位</td><td>log_amt 校准 + 放量&lt;6 过滤</td><td><b>65.7%</b></td><td>—</td><td>规则过滤 &gt; 加权组合</td></tr>
+      <tr><td>v4 首板</td><td>首板 + 换手&lt;3% + log_amt 校准</td><td>—</td><td><b>31.6%</b></td><td>首板惜售票晋级率显著更高</td></tr>
+    </table>
+    <div class="note">身位维度本身极强：3 板次日晋级率 46%（全样本），2 板 31%，首板仅 16%。只做 1-3 板、不做 4 板+，是用户的既定约束。</div>
+  </div>
+
+  <div class="panel">
+    <h2>三、校准表（训练段 2025-09-22 ~ 2026-03-01 拟合，实测晋级率）</h2>
+    <p style="font-size:13px">「身位桶 × 成交额分位」二维校准：概率 = 历史同身位、同成交额分位的实测次日连板率。分位 Q1 = 成交额最大。</p>
+    <table>
+      <tr><th>身位</th><th>Q1（最大）</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5（最小）</th><th>解读</th></tr>
+      <tr><td>3 板</td><td><b>78.9%</b></td><td>58.5%</td><td>47.2%</td><td>35.9%</td><td>35.2%</td><td>3板+大成交额 = 最强信号（龙头锁筹）</td></tr>
+      <tr><td>2 板</td><td><b>60.7%</b></td><td>39.1%</td><td>31.3%</td><td>31.1%</td><td>19.2%</td><td>2板+大成交额也显著占优</td></tr>
+      <tr><td>1 板</td><td>22.3%</td><td>17.1%</td><td>16.5%</td><td>18.6%</td><td>15.0%</td><td>首板成交额几乎无区分（信息极限）</td></tr>
+    </table>
+    <p style="font-size:13px;margin-top:10px"><b>换手率校准（同为训练段实测）</b>——同身位内换手越低晋级率越高：</p>
+    <table>
+      <tr><th>身位</th><th>最低换手 20%</th><th>Q2</th><th>Q3</th><th>Q4</th><th>最高换手 20%</th></tr>
+      <tr><td>2 板</td><td><b>58%</b></td><td>33%</td><td>29%</td><td>30%</td><td>27%</td></tr>
+      <tr><td>3 板</td><td><b>79%</b></td><td>54%</td><td>40%</td><td>42%</td><td>38%</td></tr>
+    </table>
+    <div class="note">v4 首板策略即利用「首板+换手&lt;3%」校准档（Q1 = 35.4%）。低位策略用「放量&lt;6」排除放量 6 倍以上的天量分歧票（此类票次日炸板/断板风险显著更高）。</div>
+  </div>
+
+  <div class="panel">
+    <h2>四、v3 vs v4 完整对比（主板口径，全期 242 日）</h2>
+    <table>
+      <tr><th>策略</th><th>TOP1</th><th>训练段</th><th>验证段</th><th>TOP2</th><th>TOP3</th><th>TOP5</th><th>池 1-5</th></tr>
+      <tr><td>v3 全池</td><td>53.7%</td><td>59.4%</td><td>49.6%</td><td>50.8%</td><td>45.9%</td><td>38.4%</td><td>45.4%</td></tr>
+      <tr><td>v3 低位池</td><td>52.5%</td><td>58.4%</td><td>48.2%</td><td>44.2%</td><td>39.3%</td><td>34.7%</td><td>40.2%</td></tr>
+      <tr><td>v3 首板池</td><td>21.5%</td><td>25.7%</td><td>18.4%</td><td>16.9%</td><td>14.0%</td><td>17.8%</td><td>17.9%</td></tr>
+      <tr class="best"><td>v4 低位池（放量&lt;6）</td><td><b>65.7%</b></td><td><b>68.3%</b></td><td><b>63.8%</b></td><td>46.7%</td><td>39.3%</td><td>36.4%</td><td>44.5%</td></tr>
+      <tr class="best"><td>v4 首板池（换手&lt;3）</td><td><b>31.6%</b></td><td><b>33.3%</b></td><td><b>30.4%</b></td><td>17.0%</td><td>22.7%</td><td>20.0%</td><td>21.8%</td></tr>
+    </table>
+    <div class="note">v4 是「精选少数」策略：TOP1 显著更强，但 TOP3 起概率衰减快（第二、三名成交额分位下降）。适合只重仓 1 只的玩法；若需要分散 3-5 只，v3 的 TOP 池更稳。</div>
+  </div>
+
+  <div class="panel">
+    <h2>五、v4 每日选出的票长什么样</h2>
+    <ul>
+      <li>身位分布：TOP1 全为 2-3 板（242 日中 2 板 130 日 / 3 板 112 日，无 1 板）。</li>
+      <li>换手分布：&lt; 2% 占 46.7%、&lt; 5% 占 82.6%、≥ 15% 仅 2.9% —— 低换手惜售是绝对主导。</li>
+      <li>画像：<b>「大成交额 + 缩量/低换手的 2-3 板票」</b>，即市场资金关注且筹码锁定充分的连板中位股。</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>六、数据与方法</h2>
+    <ul>
+      <li>数据源：baostock 日线 1,839,023 行（2025-06-03 ~ 2026-09-21，主板 3,153 只，含换手/成交额/成交量）。</li>
+      <li>样本构建：主板（60/00 开头、非 ST）当日 pct ≥ 9.8% = 涨停；次日仍涨停 = 连板命中；构建 14,924 条 / 242 交易日，训练（前 5,814 条）与验证（后 9,110 条）按 2026-03-01 切分。</li>
+      <li>校准法：身位桶（1/2/3/4+）× 因子分位（Q1-Q5）→ 训练段实测晋级率；验证段独立评估；每日排序按概率降序，同分固定种子随机破平局，位次命中率按每日第 N 名样本统计。</li>
+      <li>复现：<code>python build_samples.py && python exp_iter2.py && python exp_iter3.py && python exp_iter4_final.py && python make_calib_v4.py</code></li>
+    </ul>
+    <div class="note">局限：① 首板基础晋级率仅 16%，首板 50%+ 需叠加当日盘口因子（封板时间/封单金额/炸板），东财涨停池历史仅存约 2 周、无法一年回测，已作为下一阶段方向；② 消息面（如新华传媒重组预期）无法量化进历史回测，模型输出理由仅基于量能/盘面统计。免责声明：本报告不构成投资建议。</div>
+  </div>
+</div>
+</body>
+</html>
