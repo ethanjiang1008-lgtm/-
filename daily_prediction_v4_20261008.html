@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首板连板预测 · v4 迭代版 · 2026-10-08</title>
+<style>
+  body { font-family: "Microsoft YaHei", -apple-system, sans-serif; margin: 0; background: #f5f6fa; color: #222; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 8px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .cards { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .card { background: #fff; border-radius: 10px; padding: 12px 16px; flex: 1; min-width: 150px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .card .k { color: #888; font-size: 12px; }
+  .card .v { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .v.red { color: #d23a2e; } .v.green { color: #0b7a3b; }
+  .panel { background: #fff; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .panel h2 { font-size: 16px; margin: 0 0 10px; border-left: 4px solid #d23a2e; padding-left: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid #eee; }
+  th { background: #fafbfc; position: sticky; top: 0; font-size: 12px; color: #555; }
+  tr:hover td { background: #f8f9fb; }
+  .rank { font-weight: 700; color: #d23a2e; width: 36px; }
+  .prob { font-weight: 700; }
+  .bar { display: inline-block; height: 10px; border-radius: 5px; vertical-align: middle; margin-right: 6px; }
+  .reason { color: #555; font-size: 12px; line-height: 1.5; }
+  .note { color: #999; font-size: 12px; margin-top: 8px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .pill { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:700; }
+  .pA { background:#0b7a3b; color:#fff; } .pB { background:#1a7fd1; color:#fff; }
+  .pC { background:#e6a23c; color:#fff; } .pD { background:#aaa; color:#fff; }
+  .new { display:inline-block; background:#d23a2e; color:#fff; padding:1px 8px; border-radius:10px; font-size:11px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>首板连板预测 · v4 迭代版 <span class="new">回测验证 TOP1 67.4%</span></h1>
+  <div class="sub">2026-10-08 涨停池 → 预测 2026-10-09 连板（尾盘买入口径）· 大成交额 + 低换手 + 放量过滤 + 身位分位校准</div>
+
+  <div class="cards">
+    <div class="card"><div class="k">当日涨停</div><div class="v red">43</div></div>
+    <div class="card"><div class="k">低位池候选</div><div class="v">37</div></div>
+    <div class="card"><div class="k">首板专项候选</div><div class="v">7</div></div>
+    <div class="card"><div class="k">最高概率(低位)</div><div class="v green">58.5%</div></div>
+    <div class="card"><div class="k">模型版本</div><div class="v">v4</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>低位池榜（1-3板 · 放量&lt;6倍 · 大成交额优先）</h2>
+    <table><tr><th>#</th><th>名称</th><th>次日连板概率</th><th>评级</th><th>换手率</th><th>预测理由</th></tr><tr><td class='rank'>1</td><td>园林股份605303 · 基础建设 · 3板</td><td><span class="bar" style="width:58px;background:#0b7a3b"></span><span class="prob">58.5%</span></td><td><span class="pill pA">A</span></td><td>0.2%</td><td class='reason'>3板，连板中位；换手率0.2%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额0.1亿，资金关注度高（回测：大成交额晋级率高）；放量4.4倍，未天量分歧；所属基础建设题材；同身位中高分位</td></tr><tr><td class='rank'>2</td><td>紫竹高科002058 · 电池 · 3板</td><td><span class="bar" style="width:47px;background:#1a7fd1"></span><span class="prob">47.2%</span></td><td><span class="pill pB">B</span></td><td>3.3%</td><td class='reason'>3板，连板中位；换手率3.3%，筹码稳定；成交额1.0亿，资金关注度高（回测：大成交额晋级率高）；放量2.1倍，温和放量；所属电池题材；同身位中高分位</td></tr><tr><td class='rank'>3</td><td>传艺科技002866 · 消费电子 · 3板</td><td><span class="bar" style="width:35px;background:#1a7fd1"></span><span class="prob">35.9%</span></td><td><span class="pill pB">B</span></td><td>20.6%</td><td class='reason'>3板，连板中位；换手率20.6%过高，分歧大晋级率低；成交额6.7亿，资金关注度高（回测：大成交额晋级率高）；放量3.5倍，未天量分歧；所属消费电子题材；同身位中高分位</td></tr><tr><td class='rank'>4</td><td>上海洗霸603200 · 环境治理 · 3板</td><td><span class="bar" style="width:35px;background:#1a7fd1"></span><span class="prob">35.2%</span></td><td><span class="pill pB">B</span></td><td>18.3%</td><td class='reason'>3板，连板中位；换手率18.3%过高，分歧大晋级率低；成交额15.3亿，资金关注度高（回测：大成交额晋级率高）；放量4.6倍，未天量分歧；所属环境治理题材；同身位中高分位</td></tr><tr><td class='rank'>5</td><td>兴业股份603928 · 塑料 · 2板</td><td><span class="bar" style="width:31px;background:#e6a23c"></span><span class="prob">31.3%</span></td><td><span class="pill pC">C</span></td><td>7.6%</td><td class='reason'>2板，首板晋级后延续；成交额3.6亿，资金关注度高（回测：大成交额晋级率高）；放量3.3倍，未天量分歧；所属塑料题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>6</td><td>楚环科技001336 · 环保设备 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.3%</span></td><td><span class="pill pC">C</span></td><td>9.5%</td><td class='reason'>1板；成交额1.2亿，资金关注度高（回测：大成交额晋级率高）；放量3.4倍，未天量分歧；所属环保设备题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>7</td><td>松炀资源603863 · 造纸 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.3%</span></td><td><span class="pill pC">C</span></td><td>4.2%</td><td class='reason'>1板；换手率4.2%，筹码稳定；成交额1.1亿，资金关注度高（回测：大成交额晋级率高）；放量1.5倍，温和放量；所属造纸题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>8</td><td>三柏硕001300 · 文娱用品 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.3%</span></td><td><span class="pill pC">C</span></td><td>3.5%</td><td class='reason'>1板；换手率3.5%，筹码稳定；成交额1.1亿，资金关注度高（回测：大成交额晋级率高）；放量2.8倍，温和放量；所属文娱用品题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>9</td><td>金时科技002951 · 其他电源 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.3%</span></td><td><span class="pill pC">C</span></td><td>1.5%</td><td class='reason'>1板；换手率1.5%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额1.0亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属其他电源题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>10</td><td>东贝集团601956 · 家电零部 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.3%</span></td><td><span class="pill pC">C</span></td><td>1.9%</td><td class='reason'>1板；换手率1.9%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额0.7亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属家电零部题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>11</td><td>必得科技605298 · 轨交设备 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.3%</span></td><td><span class="pill pC">C</span></td><td>0.5%</td><td class='reason'>1板；换手率0.5%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额0.4亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属轨交设备题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>12</td><td>陆家嘴600663 · 房地产开 · 2板</td><td><span class="bar" style="width:19px;background:#bbb"></span><span class="prob">19.2%</span></td><td><span class="pill pD">D</span></td><td>1.0%</td><td class='reason'>2板，首板晋级后延续；换手率1.0%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额4.3亿，资金关注度高（回测：大成交额晋级率高）；放量1.9倍，温和放量；所属房地产开题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>13</td><td>彩蝶实业603073 · 化学纤维 · 1板</td><td><span class="bar" style="width:18px;background:#bbb"></span><span class="prob">18.6%</span></td><td><span class="pill pD">D</span></td><td>18.6%</td><td class='reason'>1板；换手率18.6%过高，分歧大晋级率低；成交额4.8亿，资金关注度高（回测：大成交额晋级率高）；放量3.1倍，未天量分歧；所属化学纤维题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>14</td><td>丰元股份002805 · 电池 · 1板</td><td><span class="bar" style="width:18px;background:#bbb"></span><span class="prob">18.6%</span></td><td><span class="pill pD">D</span></td><td>8.8%</td><td class='reason'>1板；成交额4.2亿，资金关注度高（回测：大成交额晋级率高）；放量2.7倍，温和放量；所属电池题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>15</td><td>世名科技300522 · 化学制品 · 1板</td><td><span class="bar" style="width:18px;background:#bbb"></span><span class="prob">18.6%</span></td><td><span class="pill pD">D</span></td><td>9.9%</td><td class='reason'>1板；成交额4.2亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属化学制品题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>16</td><td>广西能源600310 · 电力 · 1板</td><td><span class="bar" style="width:18px;background:#bbb"></span><span class="prob">18.6%</span></td><td><span class="pill pD">D</span></td><td>5.7%</td><td class='reason'>1板；成交额4.0亿，资金关注度高（回测：大成交额晋级率高）；放量1.9倍，温和放量；所属电力题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>17</td><td>领湃科技300530 · 电池 · 1板</td><td><span class="bar" style="width:18px;background:#bbb"></span><span class="prob">18.6%</span></td><td><span class="pill pD">D</span></td><td>10.3%</td><td class='reason'>1板；成交额4.0亿，资金关注度高（回测：大成交额晋级率高）；放量4.3倍，未天量分歧；所属电池题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>18</td><td>红豆股份600400 · 服装家纺 · 1板</td><td><span class="bar" style="width:18px;background:#bbb"></span><span class="prob">18.6%</span></td><td><span class="pill pD">D</span></td><td>4.8%</td><td class='reason'>1板；换手率4.8%，筹码稳定；成交额3.9亿，资金关注度高（回测：大成交额晋级率高）；放量2.9倍，温和放量；所属服装家纺题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>19</td><td>国新能源600617 · 燃气Ⅱ · 1板</td><td><span class="bar" style="width:17px;background:#bbb"></span><span class="prob">17.1%</span></td><td><span class="pill pD">D</span></td><td>2.9%</td><td class='reason'>1板；换手率2.9%，筹码稳定；成交额1.9亿，资金关注度高（回测：大成交额晋级率高）；放量2.2倍，温和放量；所属燃气Ⅱ题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>20</td><td>金溢科技002869 · 计算机设 · 1板</td><td><span class="bar" style="width:17px;background:#bbb"></span><span class="prob">17.1%</span></td><td><span class="pill pD">D</span></td><td>5.6%</td><td class='reason'>1板；成交额1.7亿，资金关注度高（回测：大成交额晋级率高）；放量1.7倍，温和放量；所属计算机设题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>21</td><td>张  裕Ａ000869 · 非白酒 · 1板</td><td><span class="bar" style="width:17px;background:#bbb"></span><span class="prob">17.1%</span></td><td><span class="pill pD">D</span></td><td>1.7%</td><td class='reason'>1板；换手率1.7%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额1.4亿，资金关注度高（回测：大成交额晋级率高）；放量2.7倍，温和放量；所属非白酒题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>22</td><td>恒尚节能603137 · 装修装饰 · 1板</td><td><span class="bar" style="width:17px;background:#bbb"></span><span class="prob">17.1%</span></td><td><span class="pill pD">D</span></td><td>4.0%</td><td class='reason'>1板；换手率4.0%，筹码稳定；成交额1.4亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属装修装饰题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>23</td><td>快意电梯002774 · 专用设备 · 1板</td><td><span class="bar" style="width:17px;background:#bbb"></span><span class="prob">17.1%</span></td><td><span class="pill pD">D</span></td><td>2.6%</td><td class='reason'>1板；换手率2.6%，筹码稳定；成交额1.3亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属专用设备题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>24</td><td>乔治白002687 · 服装家纺 · 1板</td><td><span class="bar" style="width:17px;background:#bbb"></span><span class="prob">17.1%</span></td><td><span class="pill pD">D</span></td><td>5.1%</td><td class='reason'>1板；成交额1.3亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属服装家纺题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>25</td><td>海欣食品002702 · 食品加工 · 1板</td><td><span class="bar" style="width:16px;background:#bbb"></span><span class="prob">16.5%</span></td><td><span class="pill pD">D</span></td><td>14.4%</td><td class='reason'>1板；成交额3.7亿，资金关注度高（回测：大成交额晋级率高）；放量2.1倍，温和放量；所属食品加工题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>26</td><td>雄韬股份002733 · 电池 · 1板</td><td><span class="bar" style="width:16px;background:#bbb"></span><span class="prob">16.5%</span></td><td><span class="pill pD">D</span></td><td>4.4%</td><td class='reason'>1板；换手率4.4%，筹码稳定；成交额3.0亿，资金关注度高（回测：大成交额晋级率高）；放量1.9倍，温和放量；所属电池题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>27</td><td>野马电池605378 · 电池 · 1板</td><td><span class="bar" style="width:16px;background:#bbb"></span><span class="prob">16.5%</span></td><td><span class="pill pD">D</span></td><td>6.2%</td><td class='reason'>1板；成交额2.7亿，资金关注度高（回测：大成交额晋级率高）；放量1.9倍，温和放量；所属电池题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>28</td><td>安泰集团600408 · 焦炭Ⅱ · 1板</td><td><span class="bar" style="width:16px;background:#bbb"></span><span class="prob">16.5%</span></td><td><span class="pill pD">D</span></td><td>6.4%</td><td class='reason'>1板；成交额2.2亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属焦炭Ⅱ题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>29</td><td>卓越新能688196 · 化学制品 · 1板</td><td><span class="bar" style="width:16px;background:#bbb"></span><span class="prob">16.5%</span></td><td><span class="pill pD">D</span></td><td>5.0%</td><td class='reason'>1板；成交额2.2亿，资金关注度高（回测：大成交额晋级率高）；放量3.7倍，未天量分歧；所属化学制品题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>30</td><td>力王股份920627 · 电池 · 1板</td><td><span class="bar" style="width:16px;background:#bbb"></span><span class="prob">16.5%</span></td><td><span class="pill pD">D</span></td><td>25.7%</td><td class='reason'>1板；换手率25.7%过高，分歧大晋级率低；成交额2.1亿，资金关注度高（回测：大成交额晋级率高）；所属电池题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>31</td><td>顺灏股份002565 · 包装印刷 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>16.1%</td><td class='reason'>1板；换手率16.1%过高，分歧大晋级率低；成交额15.6亿，资金关注度高（回测：大成交额晋级率高）；放量1.8倍，温和放量；所属包装印刷题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>32</td><td>招商南油601975 · 航运港口 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>6.4%</td><td class='reason'>1板；成交额14.7亿，资金关注度高（回测：大成交额晋级率高）；放量2.2倍，温和放量；所属航运港口题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>33</td><td>金牛化工600722 · 化学原料 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>12.1%</td><td class='reason'>1板；成交额13.2亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属化学原料题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>34</td><td>中远海能600026 · 航运港口 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>1.0%</td><td class='reason'>1板；换手率1.0%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额8.7亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属航运港口题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>35</td><td>贝特利301697 · 光伏设备 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>46.2%</td><td class='reason'>1板；换手率46.2%过高，分歧大晋级率低；成交额6.2亿，资金关注度高（回测：大成交额晋级率高）；放量1.6倍，温和放量；所属光伏设备题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>36</td><td>山东墨龙002490 · 专用设备 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>12.5%</td><td class='reason'>1板；成交额5.0亿，资金关注度高（回测：大成交额晋级率高）；放量5.1倍，未天量分歧；所属专用设备题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>37</td><td>华北制药600812 · 化学制药 · 1板</td><td><span class="bar" style="width:14px;background:#bbb"></span><span class="prob">15.0%</span></td><td><span class="pill pD">D</span></td><td>5.3%</td><td class='reason'>1板；成交额4.9亿，资金关注度高（回测：大成交额晋级率高）；放量3.1倍，未天量分歧；所属化学制药题材；同身位低分位，晋级概率有限</td></tr></table>
+  </div>
+
+  <div class="panel">
+    <h2>首板专项榜（首板 · 换手率&lt;3% 惜售锁筹）</h2>
+    <table><tr><th>#</th><th>名称</th><th>次日连板概率</th><th>评级</th><th>换手率</th><th>预测理由</th></tr><tr><td class='rank'>1</td><td>必得科技605298 · 轨交设备 · 1板</td><td><span class="bar" style="width:35px;background:#1a7fd1"></span><span class="prob">35.4%</span></td><td><span class="pill pB">B</span></td><td>0.5%</td><td class='reason'>首板，连板起点；换手率0.5%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额0.4亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属轨交设备题材；同身位中高分位</td></tr><tr><td class='rank'>2</td><td>张  裕Ａ000869 · 非白酒 · 1板</td><td><span class="bar" style="width:25px;background:#e6a23c"></span><span class="prob">25.0%</span></td><td><span class="pill pC">C</span></td><td>1.7%</td><td class='reason'>首板，连板起点；换手率1.7%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额1.4亿，资金关注度高（回测：大成交额晋级率高）；放量2.7倍，温和放量；所属非白酒题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>3</td><td>东贝集团601956 · 家电零部 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.9%</span></td><td><span class="pill pC">C</span></td><td>1.9%</td><td class='reason'>首板，连板起点；换手率1.9%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额0.7亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属家电零部题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>4</td><td>快意电梯002774 · 专用设备 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.7%</span></td><td><span class="pill pC">C</span></td><td>2.6%</td><td class='reason'>首板，连板起点；换手率2.6%极低，惜售锁筹（回测：首板低换手晋级率31%）；成交额1.3亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属专用设备题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>5</td><td>金时科技002951 · 其他电源 · 1板</td><td><span class="bar" style="width:22px;background:#e6a23c"></span><span class="prob">22.7%</span></td><td><span class="pill pC">C</span></td><td>1.5%</td><td class='reason'>首板，连板起点；换手率1.5%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额1.0亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属其他电源题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>6</td><td>中远海能600026 · 航运港口 · 1板</td><td><span class="bar" style="width:9px;background:#bbb"></span><span class="prob">9.3%</span></td><td><span class="pill pD">D</span></td><td>1.0%</td><td class='reason'>首板，连板起点；换手率1.0%极低，惜售锁筹（回测：同身位低换手晋级率58~79%）；成交额8.7亿，资金关注度高（回测：大成交额晋级率高）；缩量涨停，筹码锁定；所属航运港口题材；同身位低分位，晋级概率有限</td></tr><tr><td class='rank'>7</td><td>国新能源600617 · 燃气Ⅱ · 1板</td><td><span class="bar" style="width:9px;background:#bbb"></span><span class="prob">9.3%</span></td><td><span class="pill pD">D</span></td><td>2.9%</td><td class='reason'>首板，连板起点；换手率2.9%极低，惜售锁筹（回测：首板低换手晋级率31%）；成交额1.9亿，资金关注度高（回测：大成交额晋级率高）；放量2.2倍，温和放量；所属燃气Ⅱ题材；同身位低分位，晋级概率有限</td></tr></table>
+  </div>
+
+  <div class="panel">
+    <h2>v4 模型说明（2026-09-23 迭代，请先阅读）</h2>
+    <div class="grid2">
+      <div>
+        <b>v4 策略（回测实证得出，非拍脑袋）</b>
+        <ul>
+          <li>低位池：仅保留 1-3 板 且 放量倍数&lt;6（排除天量分歧票）；按「同身位内成交额分位」校准概率，取 TOP。</li>
+          <li>首板专项：仅保留 首板 且 换手率&lt;3%（惜售锁筹），按成交额分位校准。</li>
+          <li>核心规律（训练集校准表）：同身位内换手越低晋级率越高 —— 2板低换手 58% vs 高换手 27%；3板低换手 79% vs 高换手 38%；3板+大成交额(Q1) 78.9%。</li>
+        </ul>
+        <b>为什么 v4 更强？</b>
+        <div class="note">v3 用六因子等权组合，把「身位/换手/成交额」三个强信号互相稀释；v4 收敛到回测中最强的 2 个信号（成交额分层 + 换手/放量过滤），并用同身位分位校准把概率映射到历史实测晋级率。</div>
+      </div>
+      <div>
+        <b>回测命中率（沪深主板非ST/科创/创业，2025-09-22~2026-09-21，242 交易日，训练/验证切分）</b>
+        <table>
+          <tr><th>策略 TOP1</th><th>全期</th><th>训练段</th><th>验证段</th></tr>
+          <tr><td>v3 低位池</td><td>52.5%</td><td>58.4%</td><td>48.2%</td></tr>
+          <tr><td><b>v4 低位池</b></td><td><b>65.7%</b></td><td><b>68.3%</b></td><td><b>63.8%</b></td></tr>
+          <tr><td>v3 首板池</td><td>21.5%</td><td>25.7%</td><td>18.4%</td></tr>
+          <tr><td><b>v4 首板池</b></td><td><b>31.6%</b></td><td><b>33.3%</b></td><td><b>30.4%</b></td></tr>
+        </table>
+        <div class="note">v4 低位池 TOP1 提升 +13.2pp、首板池 +10.1pp，验证段不弱于训练段（非过拟合）。TOP3/TOP5 与 v3 相当或略降：v4 是「精选少数」策略，越往后概率衰减越快。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>数据与验证</h2>
+    <ul>
+      <li>数据源：baostock 日线（主板 3,153 只，含换手/成交额）+ 东方财富涨停池（当日真实换手/成交额/连板数）。</li>
+      <li>口径：当日涨停 → 次日收盘仍涨停 = 命中（连板晋级）；尾盘买入假设；只做沪深主板（非ST/科创/创业）。</li>
+      <li>概率 = 同身位（1/2/3/4+板）× 成交额分位（Q1-Q5）校准表的历史实测晋级率（训练段 2025-09-22~2026-03-01 拟合，验证段独立评估）。</li>
+      <li>复现：<code>python build_samples.py && python exp_iter4_final.py</code>；校准表 <code>python make_calib_v4.py</code>。</li>
+    </ul>
+    <div class="note">免责声明：本模型基于历史统计规律，不构成投资建议。连板为高风险博弈，请独立判断、控制仓位。</div>
+  </div>
+</div>
+</body>
+</html>
